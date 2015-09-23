@@ -6,7 +6,8 @@ from time import sleep
 
 
 def get_wayfair_product_links(link, num_pages=1):
-	'''
+
+    '''
     INPUT: 
     * product index page URL link 
     * number of pages that product links will be scrapped from 
@@ -17,6 +18,7 @@ def get_wayfair_product_links(link, num_pages=1):
     '''
 
     product_links = []
+
 
     for num in range(1,num_pages+1):
         html  = urlopen(link+str(num))
@@ -78,10 +80,7 @@ def wayfair_product_info_scrapper(link, category_input):
        
     manufacturer = soup.find('span', {'class':'manu_name'}).text.strip().lstrip('by').strip() 
     
-    if soup.find('p', {'class':'product_section_description'}) != None:
-        description = soup.find('p', {'class':'product_section_description'}).text
-    else:
-        description = None
+
         
     if soup.find('span', {'class': 'rating_value'}) != None:
         rating_avg = soup.find('span', {'class': 'rating_value'}).text
@@ -119,7 +118,25 @@ def wayfair_product_info_scrapper(link, category_input):
             image_links_all.extend(image_links_color)
             sleep(random.random())
     image_links_all = list(set(image_links_all))
-    
+
+    if soup.find('p', {'class':'product_section_description'}) != None:
+        description = soup.find('p', {'class':'product_section_description'}).text
+    else:
+        description = None
+
+    # Add code to fix missing features data (when the webpage has a different structure):
+    if len(features) == 0:
+        description_info = soup.find('div', {'class':'no_json_description'})
+        if description_info.text != None:
+            description = description_info.text
+        else:
+            description = '\n'.join([x.text for x in description_info.findAll('p')])
+        if description_info.ul != None:
+            features = description_info.ul.text
+        else:
+            features = '\n'.join([x.text for x in soup.findAll('ul') if 'Free Shipping' not in x.text])
+    # Added code ends
+
     product_info_dict = {}
     product_info_dict['product_id'] = product_id
     product_info_dict['website'] = website
