@@ -1,5 +1,6 @@
 
 import numpy as np
+import os.path
 from numpy.linalg import svd
 from sklearn.cluster import KMeans
 
@@ -10,8 +11,22 @@ from skimage import transform, feature
 from pyimage.pipeline import ImagePipeline
 
 
+def get_paths(category, image=True, white=False):
+    base_path = 'wayfair/images/' 
+    if white:
+    	paths = os.listdir(base_path + category + '/white')
+    else:
+        paths = os.listdir(base_path + category)
 
-def get_domi_color(paths):
+    if image:
+    	paths = [x for x in paths if x[-3:] == 'jpg']
+    else:
+        paths = [x for x in paths if x[0] != '.']
+
+    return paths
+
+
+def get_domi_color(paths, category):
     '''
     For all files in paths, tease out photos without a clear white background 
     and save those into the 'background' folder.
@@ -32,8 +47,8 @@ def get_domi_color(paths):
     domi_color_dict = {}
     
     for path in paths:
-        category = '_'.join(path.split('_')[0:-2])
-        image = skimage.io.imread('image_test/' + category + '/' + path)
+        #category = '_'.join(path.split('_')[0:-2])
+        image = skimage.io.imread('wayfair/images/' + category + '/' + path)
         
         # If the picture is grayscale, discard it for now. Think about how to improve it later.
         
@@ -63,18 +78,18 @@ def get_domi_color(paths):
                 domi_color = color
 
         if not flag:    
-            new_path = 'image_test_result/background/' + path
+            new_path = 'wayfair/images/' + category + '/background/' + path
             skimage.io.imsave(new_path, image)
             domi_color_dict[path] = False 
         else:
-            new_path = 'image_test_result/white/' + path
+            new_path = 'wayfair/images/' + category + '/white/' + path
             skimage.io.imsave(new_path, image)
             domi_color_dict[path] = domi_color 
         
     return domi_color_dict
 
 
-def vectorize_color_distribution(paths):
+def vectorize_color_distribution(paths, category):
     
     '''INPUT:
             paths: list of strings
@@ -91,7 +106,7 @@ def vectorize_color_distribution(paths):
     for path in paths:
         #category = '_'.join(path.split('_')[0:-2])
         
-        image = skimage.io.imread('image_test_result/' + 'white' + '/' + path)
+        image = skimage.io.imread('wayfair/images/' + category + '/' + path)
         image = transform.resize(image, (300,300,3))
     
         nrow, ncol, depth = image.shape 
@@ -119,7 +134,7 @@ def vectorize_color_distribution(paths):
 
 
 
-def clustering_with_color(color_dict, category, n_clusters=6, save_image=True, domi_color=True):
+def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, domi_color=True):
     '''
     Cluster by color & save files to different folders according to labels.
 
@@ -155,18 +170,18 @@ def clustering_with_color(color_dict, category, n_clusters=6, save_image=True, d
         cluster_label_dict[path] = label
         
         if save_image:
-            image = skimage.io.imread('image_test/' + category + '/' + path)
+            image = skimage.io.imread('wayfair/images/' + category + '/' + path)
             if domi_color:
-            	new_path = 'image_test_result/' + str(label) + '/' + path
+            	new_path = 'wayfair/images/' + category + '/domi_color/' + str(label) + '/' + path
             else:
-            	new_path = 'image_test_result/color_dist/' + str(label) + '/' + path
+            	new_path = 'wayfair/images/' + category + '/color_dist/' + str(label) + '/' + path
             skimage.io.imsave(new_path, image)
     
     return cluster_label_dict, color_centroids
 
 
 
-# def clustering_with_color_dist(color_dist_dict, category, n_clusters=6):
+# def clustering_with_color_dist(color_dist_dict, category, n_clusters=10):
 #     '''
 #     INPUT: color_dist_dict:
 #             * key: path
@@ -198,30 +213,29 @@ def clustering_with_color(color_dict, category, n_clusters=6, save_image=True, d
 #         path = color_dist_reverse_dict[tuple(j)]
 #         cluster_label_dict[path] = label
         
-#         image = skimage.io.imread('image_test/' + category + '/' + path)
-#         new_path = 'image_test_result/color_dist/' + str(label) + '/' + path
+#         image = skimage.io.imread('wayfair/images/' + category + '/' + path)
+#         new_path = 'wayfair/images/color_dist/' + str(label) + '/' + path
 #         skimage.io.imsave(new_path, image)
     
 #     return cluster_label_dict, color_centroids
 
 
-def image_featurizer(base_path, sub_dir, edge=False, svd=False):
+def image_featurizer(category, sub_dir='white', edge=False, SVD=False):
 
     '''
     Taking image file path info and using ImagePipeline to vectorize images within the folder.
 
     INPUT:
-        base_path: string
         sub_dir: string
         edge: boolean
-        svd: boolean
+        SVD: boolean
 
     OUTPUT:
         feature_dict: dictionary
             key: path (filename)
             value: vectorized image
     '''
-
+    base_path = 'wayfair/images/' + category + '/'
     image_pipe = ImagePipeline(base_path)
     image_pipe.read(sub_dirs=(sub_dir,))
 
@@ -233,7 +247,7 @@ def image_featurizer(base_path, sub_dir, edge=False, svd=False):
     image_pipe.vectorize()
     features = image_pipe.features
 
-    if svd:
+    if SVD:
     	U, sigma, VT = svd(features)
     	if edge:
     		features = U[:,:100]
@@ -252,7 +266,7 @@ def image_featurizer(base_path, sub_dir, edge=False, svd=False):
     return feature_dict
 
 
-def clustering_with_feature(feature_dict, n_clusters=6, svd=False, save_image=True, edge=False):
+def clustering_with_feature(feature_dict, category, n_clusters=10, SVD=False, save_image=True, edge=False):
     '''
     Cluster by features & save files to different folders according to labels.
 
@@ -288,13 +302,13 @@ def clustering_with_feature(feature_dict, n_clusters=6, svd=False, save_image=Tr
         cluster_label_dict[path] = label
         
         if save_image:
-            image = skimage.io.imread('image_test_result/same_angle/' + path)
-            if svd:
-                new_path = 'image_test_result/features_svd/' + str(label) + '/' + path
+            image = skimage.io.imread('wayfair/images/' + category + '/' + path)
+            if SVD:
+                new_path = 'wayfair/images/' + category + '/features_svd/' + str(label) + '/' + path
             elif edge:
-                new_path = 'image_test_result/features_edge/' + str(label) + '/' + path
+                new_path = 'wayfair/images/' + category + '/features_edge/' + str(label) + '/' + path
             else:
-                new_path = 'image_test_result/features/' + str(label) + '/' + path
+                new_path = 'wayfair/images/' + category + '/features/' + str(label) + '/' + path
             skimage.io.imsave(new_path, image)
     
     return cluster_label_dict, feature_centroids
