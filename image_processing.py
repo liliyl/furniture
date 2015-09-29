@@ -263,7 +263,10 @@ def image_featurizer(category, sub_dir='white', edge=False, SVD=False):
         feature = features[i]
         feature_dict[path] = feature
 
-    return feature_dict
+    if SVD:
+        return feature_dict, U, sigma, VT
+    else:
+        return feature_dict, features
 
 
 def clustering_with_feature(feature_dict, category, n_clusters=10, SVD=False, save_image=True, edge=False):
