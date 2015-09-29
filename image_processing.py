@@ -5,8 +5,8 @@ from numpy.linalg import svd
 from sklearn.cluster import KMeans
 
 import skimage
-from skimage import io
-from skimage import transform, feature
+# from skimage import io, feature
+from skimage import transform
 
 from pyimage.pipeline import ImagePipeline
 
@@ -14,12 +14,12 @@ from pyimage.pipeline import ImagePipeline
 def get_paths(category, image=True, white=False):
     base_path = 'wayfair/images/' 
     if white:
-    	paths = os.listdir(base_path + category + '/white')
+        paths = os.listdir(base_path + category + '/white')
     else:
         paths = os.listdir(base_path + category)
 
     if image:
-    	paths = [x for x in paths if x[-3:] == 'jpg']
+        paths = [x for x in paths if x[-3:] == 'jpg']
     else:
         paths = [x for x in paths if x[0] != '.']
 
@@ -172,9 +172,9 @@ def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, 
         if save_image:
             image = skimage.io.imread('wayfair/images/' + category + '/' + path)
             if domi_color:
-            	new_path = 'wayfair/images/' + category + '/domi_color/' + str(label) + '/' + path
+                new_path = 'wayfair/images/' + category + '/domi_color/' + str(label) + '/' + path
             else:
-            	new_path = 'wayfair/images/' + category + '/color_dist/' + str(label) + '/' + path
+                new_path = 'wayfair/images/' + category + '/color_dist/' + str(label) + '/' + path
             skimage.io.imsave(new_path, image)
     
     return cluster_label_dict, color_centroids
