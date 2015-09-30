@@ -52,8 +52,10 @@ def get_domi_color(paths, category):
         
         # If the picture is grayscale, discard it for now. Think about how to improve it later.
         
+        gray = 0
         if len(image.shape) == 2:
-            print 'gray'
+            gray += 1
+            # print 'gray'
             continue
             
         image = transform.resize(image, (300,300,3))
@@ -78,13 +80,15 @@ def get_domi_color(paths, category):
                 domi_color = color
 
         if not flag:    
-            new_path = 'wayfair/images/' + category + '/background/' + path
-            skimage.io.imsave(new_path, image)
+            # new_path = 'wayfair/images/' + category + '/background/' + path
+            # skimage.io.imsave(new_path, image)
             domi_color_dict[path] = False 
         else:
-            new_path = 'wayfair/images/' + category + '/white/' + path
-            skimage.io.imsave(new_path, image)
+            # new_path = 'wayfair/images/' + category + '/white/' + path
+            # skimage.io.imsave(new_path, image)
             domi_color_dict[path] = domi_color 
+
+    print '# of grayscaled photos: ', gray
         
     return domi_color_dict
 
