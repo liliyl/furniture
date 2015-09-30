@@ -1,14 +1,15 @@
 
 import numpy as np
 import os.path
-from numpy.linalg import svd
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 import skimage
-# from skimage import io, feature
 from skimage import transform
 
 from pyimage.pipeline import ImagePipeline
+
 
 
 def get_paths(category, image=True, white=False):
@@ -24,6 +25,7 @@ def get_paths(category, image=True, white=False):
         paths = [x for x in paths if x[0] != '.']
 
     return paths
+
 
 
 def get_domi_color(paths, category):
@@ -93,6 +95,7 @@ def get_domi_color(paths, category):
     return domi_color_dict
 
 
+
 def vectorize_color_distribution(paths, category):
     
     '''INPUT:
@@ -134,7 +137,6 @@ def vectorize_color_distribution(paths, category):
         color_dist_dict[path] = color_dist_vector
         
     return color_dist_dict
-
 
 
 
@@ -181,50 +183,11 @@ def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, 
                 new_path = 'wayfair/images/' + category + '/color_dist/' + str(label) + '/' + path
             skimage.io.imsave(new_path, image)
     
-    return cluster_label_dict, color_centroids
+    return cluster_label_dict, color_centroids, km_color
 
 
 
-# def clustering_with_color_dist(color_dist_dict, category, n_clusters=10):
-#     '''
-#     INPUT: color_dist_dict:
-#             * key: path
-#             * value: color distribution vector
-    
-#     Cluster by color & save files to different folders according to labels.
-    
-#     OUTPUT: cluster_label_dict
-#             * key: path
-#             * value: cluster label
-#             color_dist_centroids:
-#             * index: label 
-#             * value: centroid
-#     '''
-#     color_dist_values = color_dist_dict.values()
-    
-#     color_dist_reverse_dict = {}
-#     for i, j in color_dist_dict.iteritems():
-#         color_dist_reverse_dict[tuple(j)] = i 
-        
-#     km_color = KMeans(n_clusters=n_clusters)
-#     color_dist_labels =km_color.fit_predict(color_dist_values)
-    
-#     color_dist_centroids = km_color.cluster_centers_
-             
-#     cluster_label_dict = {}
-#     for i, j in enumerate(color_dist_values):
-#         label = color_dist_labels[i]
-#         path = color_dist_reverse_dict[tuple(j)]
-#         cluster_label_dict[path] = label
-        
-#         image = skimage.io.imread('wayfair/images/' + category + '/' + path)
-#         new_path = 'wayfair/images/color_dist/' + str(label) + '/' + path
-#         skimage.io.imsave(new_path, image)
-    
-#     return cluster_label_dict, color_centroids
-
-
-def image_featurizer(category, sub_dir='white', edge=False, SVD=False):
+def image_featurizer(category, sub_dir='white', edge=False, pca=False):
 
     '''
     Taking image file path info and using ImagePipeline to vectorize images within the folder.
@@ -232,7 +195,7 @@ def image_featurizer(category, sub_dir='white', edge=False, SVD=False):
     INPUT:
         sub_dir: string
         edge: boolean
-        SVD: boolean
+        pca: boolean
 
     OUTPUT:
         feature_dict: dictionary
@@ -251,12 +214,13 @@ def image_featurizer(category, sub_dir='white', edge=False, SVD=False):
     image_pipe.vectorize()
     features = image_pipe.features
 
-    if SVD:
-    	U, sigma, VT = svd(features)
-    	if edge:
-    		features = U[:,:100]
-    	else:
-    		features = U[:,:20]
+    if pca:
+        scaler = StandardScaler()
+        features_scaled = scaler.fit_transform(features)
+        pca_model = PCA(n_components=100)
+        pca_data = pca_model.fit_transform(features_scaled)
+        features = pca_data
+
 
     paths = os.listdir(base_path + sub_dir)
     paths = [x for x in paths if x[0] != '.']
@@ -267,13 +231,13 @@ def image_featurizer(category, sub_dir='white', edge=False, SVD=False):
         feature = features[i]
         feature_dict[path] = feature
 
-    if SVD:
-        return feature_dict, U, sigma, VT
+    if pca:
+        return feature_dict, scaler, pca_model
     else:
-        return feature_dict, features
+        return feature_dict
 
 
-def clustering_with_feature(feature_dict, category, n_clusters=10, SVD=False, save_image=True, edge=False):
+def clustering_with_feature(feature_dict, category, n_clusters=10, pca=False, save_image=True, edge=False):
     '''
     Cluster by features & save files to different folders according to labels.
 
@@ -310,28 +274,31 @@ def clustering_with_feature(feature_dict, category, n_clusters=10, SVD=False, sa
         
         if save_image:
             image = skimage.io.imread('wayfair/images/' + category + '/' + path)
-            if SVD:
-                new_path = 'wayfair/images/' + category + '/features_svd/' + str(label) + '/' + path
+            if pca:
+                new_path = 'wayfair/images/' + category + '/features_pca/' + str(label) + '/' + path
             elif edge:
                 new_path = 'wayfair/images/' + category + '/features_edge/' + str(label) + '/' + path
             else:
                 new_path = 'wayfair/images/' + category + '/features/' + str(label) + '/' + path
             skimage.io.imsave(new_path, image)
     
-    return cluster_label_dict, feature_centroids
+    return cluster_label_dict, feature_centroids, km_feature
 
 
 
 # ----------------------------------------------------------------------------
-# Might be useless from here: 
+# For new images: 
 # ----------------------------------------------------------------------------
 
-def show_domi_color(image, n_clusters=3):
+def get_domi_color_new_image(image, n_clusters=2):
     nrow, ncol, depth = image.shape 
     lst_of_pixels = [image[irow][icol] for irow in range(nrow) for icol in range(ncol)]
     kmean = KMeans(n_clusters=n_clusters)
     kmean.fit_transform(lst_of_pixels)
-    domi_colors = kmean.cluster_centers_ 
-    domi_colors = domi_colors.reshape((1,n_clusters,3))
-    skimage.io.imshow(domi_colors)
-    return domi_colors
+    domi_colors_all = kmean.cluster_centers_ 
+    white_color_arr = np.array([0.98, 0.98, 0.98])
+
+    for color in domi_colors_all:
+        if np.mean(color > white_color_arr) != 1:
+            domi_color = color
+    return domi_color

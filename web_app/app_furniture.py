@@ -4,11 +4,11 @@ app = Flask(__name__)
 # home page
 @app.route('/')
 def index():
-    return render_template('index.html', title='Hello!')
+    return render_template('index.html')
 
 @app.route('/sofa_input')
 def sofa_input():
-    return render_template('sofa_input.html')
+    return render_template('input.html', cat='Sofa', form_action="/sofa_seeker")
 
 @app.route('/sofa_seeker', methods=['POST'])
 def sofa_seeker():
@@ -25,20 +25,12 @@ def sofa_seeker():
 # dresser_input
 
 # My maps
-@app.route('/map', methods=['POST'] )
-def map():
-    text = str(request.form['user_input'])
 
 
               #   <form action="/sofa_seeker" method='POST' >
               #     <input type="text" name="user_input" />
               #   <input type="submit" />
               # </form>
-
-    # return render_template('locked_out.html', map_name = 'Rescue Lock In/Out', maplink = maplink)
-
-
-    # return render_template('map.html', map_name = map_name, maplink = maplink)
 
 
 if __name__ == '__main__':
