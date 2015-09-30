@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Furniture seeker</title>
+    <title>Sofa</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
@@ -69,10 +69,37 @@
     <header>
         <div class="header-content">
             <div class="header-content-inner">
-                <h1>Furniture Seeker</h1>
+                <h1>Sofa</h1>
                 <hr>
-                <p>Minimal budget. Maximum style.</p>
-                <a href="#category" class="btn btn-primary btn-xl page-scroll">Start exploring! Pick your category!</a>
+                <div class="header-content-inner-2">
+                    <p>Enter a sofa product page URL here:</p>
+                </div>
+                    <div style="color:Black">
+                        <form action="/sofa_seeker" method='POST' >
+                        <input type="text" name="user_input" size="50" />
+                        <input type="submit" class="btn btn-primary btn-xl page-scroll"/>
+                        </form>  
+                    </div>
+<!-- 
+                <div class="header-content-inner-2">
+                    <p>Or enter a sofa image URL here:</p>
+                </div>
+                    <div style="color:Black">
+                        <form action="/sofa_seeker" method='POST' >
+                        <input type="text" name="user_input" size="50" />
+                        <input type="submit" class="btn btn-primary btn-xl page-scroll"/>
+                        </form>  
+                    </div>
+                <div class="header-content-inner-2">
+                    <p>and enter a sofa description here:</p>
+                </div>
+                    <div style="color:Black">
+                        <form action="/sofa_seeker" method='POST' >
+                        <input type="text" name="user_input" size="50" />
+                        <input type="submit" class="btn btn-primary btn-xl page-scroll"/>
+                        </form>  
+                    </div>
+-->
             </div>
         </div>
     </header>
