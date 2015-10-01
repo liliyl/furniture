@@ -291,6 +291,12 @@ def clustering_with_feature(feature_dict, category, n_clusters=10, pca=False, sa
 # ----------------------------------------------------------------------------
 
 def get_domi_color_new_image(image, n_clusters=2):
+    
+    if len(image.shape) == 3:
+        image = transform.resize(image, (300,300,3))
+    else:
+        return -1
+
     nrow, ncol, depth = image.shape 
     lst_of_pixels = [image[irow][icol] for irow in range(nrow) for icol in range(ncol)]
     kmean = KMeans(n_clusters=n_clusters)
@@ -298,6 +304,7 @@ def get_domi_color_new_image(image, n_clusters=2):
     domi_colors_all = kmean.cluster_centers_ 
     white_color_arr = np.array([0.98, 0.98, 0.98])
 
+    domi_color = None
     for color in domi_colors_all:
         if np.mean(color > white_color_arr) != 1:
             domi_color = color
