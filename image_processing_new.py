@@ -145,7 +145,7 @@ def image_featurizer(category, sub_dir='white', edge=False, pca=True):
         return feature_dict, scaler, pca_model
     else:
         return feature_dict
-
+        
 
 
 # ----------------------------------------------------------------------------
@@ -164,7 +164,7 @@ def get_domi_color_new_image(image, n_clusters=2):
     kmean = KMeans(n_clusters=n_clusters)
     kmean.fit_transform(lst_of_pixels)
     domi_colors_all = kmean.cluster_centers_ 
-    white_color_arr = np.array([0.98, 0.98, 0.98])
+    white_color_arr = np.array([0.95, 0.95, 0.95])
 
     domi_color = None
     for color in domi_colors_all:
