@@ -72,7 +72,7 @@
                 <h1>{{cat}}</h1>
                 <hr>
                 <div class="header-content-inner-2">
-                    <p><b>Enter a {{cat.lower()}} image URL here:</b></p>
+                    <p><b>{{msg}}Enter a {{cat.lower()}} image URL here:</b></p>
                 </div>
                     <div style="color:Black">
                         <form action={{form_action}} method='POST' >
@@ -80,7 +80,7 @@
                             <div style="margin-bottom:15px">
                             </div>
                             <div class="header-content-inner-2">
-                                <p><b>And the description here:</b></p>
+                                <p><b>And/or the description here:</b></p>
                             </div>
                         <input type="text" name="description" size="50" />
                         <input type="submit" class="btn btn-primary btn-xl-2 page-scroll"/>

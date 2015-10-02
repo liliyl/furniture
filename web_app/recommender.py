@@ -26,26 +26,35 @@ def recommender(image, text, category, n_recomm_items=8, color=False, price_limi
     path = 'static/json/' + category + '_vec_info.json'
     all_info_df = pd.read_json(path)
 
+    if image is not None:
+        # Dominant color
+        domi_color = get_domi_color_new_image(image)
+        # PCA
+        image = skimage.color.rgb2gray(image)
+        image = transform.resize(image, (150,150))
+        features = np.array([image[irow][icol] for irow in range(150) for icol in range(150)])
+        features_scaled = pca_scaler.transform(features)
+        pca_feature = pca_model.transform(features_scaled)
+        # Calculating image distances
+        all_info_df['domi_distance'] = all_info_df['domi'].apply(lambda x:euclidean(domi_color, x))
+        all_info_df['pca_distance'] = all_info_df['pca'].apply(lambda x:euclidean(pca_feature, x))
+    else:
+        all_info_df['domi_distance'] = 0
+        all_info_df['pca_distance'] = 0
 
-    # Dominant color
-    domi_color = get_domi_color_new_image(image)
-    # PCA
-    image = skimage.color.rgb2gray(image)
-    image = transform.resize(image, (150,150))
-    features = np.array([image[irow][icol] for irow in range(150) for icol in range(150)])
-    features_scaled = pca_scaler.transform(features)
-    pca_feature = pca_model.transform(features_scaled)
-    # tfidf
-    tfidf_vec = tfidf.transform([text]).todense()
+    if text is not None:
+        # tfidf
+        tfidf_vec = tfidf.transform([text]).todense()
+        # Calculating text distance
+        all_info_df['text_distance'] = all_info_df['tfidf_vec'].apply(lambda x:cosine(tfidf_vec, x))
+    else:
+        all_info_df['text_distance'] = 0
 
-    # Calculating distances & get recommended items in final_df:
-    all_info_df['domi_distance'] = all_info_df['domi'].apply(lambda x:euclidean(domi_color, x))
-    all_info_df['pca_distance'] = all_info_df['pca'].apply(lambda x:euclidean(pca_feature, x))
-    all_info_df['text_distance'] = all_info_df['tfidf_vec'].apply(lambda x:cosine(tfidf_vec, x))
 
+    # Get recommended items in final_df:
     domi_weight = 1
     if color:
-        domi_weight = 10
+        domi_weight = 5
 
     all_info_df['total_distance'] = all_info_df['domi_distance'] * domi_weight + all_info_df['pca_distance']/500 + all_info_df['text_distance']
 
@@ -55,16 +64,26 @@ def recommender(image, text, category, n_recomm_items=8, color=False, price_limi
     display_df.sort(columns='total_distance', axis=0, ascending=True, inplace=True)
 
     index = display_df.index
-    final_df = pd.DataFrame(display_df.ix[index[0]]).T
-    for i in index[1:]:
+
+    flag = True
+    final_df = pd.DataFrame({'product_id': {0: 0}})
+    for i in index:
     	if price_limit is None:
             if final_df.shape[0] < n_recomm_items and display_df.ix[i, 'product_id'] not in final_df['product_id'].values:
                 product_df = pd.DataFrame(display_df.ix[i]).T
-                final_df = pd.concat([final_df, product_df], axis=0)
+                if flag:
+                    final_df = product_df
+                    flag = False
+                else:
+                    final_df = pd.concat([final_df, product_df], axis=0)
         else:
             if final_df.shape[0] < n_recomm_items and display_df.ix[i, 'price'] < price_limit and display_df.ix[i, 'product_id'] not in final_df['product_id'].values:
                 product_df = pd.DataFrame(display_df.ix[i]).T
-                final_df = pd.concat([final_df, product_df], axis=0)
+                if flag:
+                    final_df = product_df
+                    flag = False
+                else:
+                    final_df = pd.concat([final_df, product_df], axis=0)
 
     final_df.sort(columns='price', axis=0, ascending=True, inplace=True)
     final_df['price'] = final_df['price'].apply(lambda x:str(x))
