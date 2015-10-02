@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{{cat}}</title>
+    <title>{{cat + ' input'}}</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
@@ -82,8 +82,17 @@
                             <div class="header-content-inner-2">
                                 <p><b>And/or the description here:</b></p>
                             </div>
-                        <input type="text" name="description" size="50" />
-                        <input type="submit" class="btn btn-primary btn-xl-2 page-scroll"/>
+                        <input type="text" name="description" size="60" />
+                        
+                            <div style="margin-bottom:10px">
+                            </div>
+                        <div class="header-content-inner-2">
+                                <p><b><span style="font-size:14px"> Wanna add a price limit? Sure! Enter here:   $</b></span>
+                                   <span style="color:Black;font-size:14px"><input type="text" name="price_limit" size="4" /></span>     <input type="submit" class="btn btn-primary btn-xl-2 page-scroll"/>
+                                </p>
+                                
+                        </div>
+                        
                         </form>  
                     </div>            
             </div>
@@ -159,8 +168,8 @@
                 </div>
 
                 <div class="col-lg-4 col-sm-3">
-                    <a href="/desk_chair_input" class="portfolio-box">
-                        <img src="../static/img/portfolio/desk_chair.jpg" class="img-responsive" alt="">
+                    <a href="/office_input" class="portfolio-box">
+                        <img src="../static/img/portfolio/office.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">

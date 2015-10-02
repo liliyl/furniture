@@ -42,7 +42,7 @@ def recommender(image, text, category, n_recomm_items=8, color=False, price_limi
         all_info_df['domi_distance'] = 0
         all_info_df['pca_distance'] = 0
 
-    if text is not None:
+    if len(text) != 0:
         # tfidf
         tfidf_vec = tfidf.transform([text]).todense()
         # Calculating text distance
