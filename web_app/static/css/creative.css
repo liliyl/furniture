@@ -65,8 +65,8 @@ p {
 }
 
 section {
-    padding: 100px 0;
-    background-color: #ADD8E6;
+    padding: 80px 0;
+    background-color: rgba(173, 216, 230, 0.5);
 }
 
 aside {

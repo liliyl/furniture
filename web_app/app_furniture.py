@@ -10,14 +10,14 @@ def index():
 
 @app.route('/sofa_input')
 def sofa_input():
-    return render_template('input.html', cat='Sofa', form_action="/sofa_seeker")
+    return render_template('input.html', cat='Sofa', form_action="/sofa_seeker#portfolio")
 
 @app.route('/sofa_seeker', methods=['POST'])
 def sofa_seeker():
     image_url = str(request.form['image_url'])
     description = str(request.form['description'])
     text = image_url+description
-    return render_template('sofa_seeker.html', text=text)
+    return render_template('seeker.html', cat='Sofa', text=text, form_action="/sofa_seeker#portfolio")
 
 
 # coffee_table_input
