@@ -46,7 +46,7 @@ def dresser_input():
     return render_template('input.html', cat='dresser', msg='', form_action="/dresser_seeker#portfolio")
 
 
-# recommended item pages
+# recommended item pages - sofa:
 @app.route('/sofa_seeker', methods=['POST'])
 def sofa_seeker():
     image_url = str(request.form['image_url'])
@@ -71,6 +71,9 @@ def sofa_seeker():
 
     final_df = recommender(image=image, text=description, category='sofa', color=False, price_limit=price_limit)
     base_path = '../static/img/wayfair/sofa/'
+
+    if final_df is None:
+        return render_template('input.html', cat='sofa', msg='Oops! No items found! Please increase the price limit. ', form_action="/sofa_seeker#portfolio")
 
     return render_template('seeker.html', cat='sofa', df=final_df, base_path=base_path, form_action="/sofa_seeker#portfolio")
 

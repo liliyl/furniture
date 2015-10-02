@@ -84,8 +84,10 @@ def recommender(image, text, category, n_recomm_items=8, color=False, price_limi
                     flag = False
                 else:
                     final_df = pd.concat([final_df, product_df], axis=0)
-
-    final_df.sort(columns='price', axis=0, ascending=True, inplace=True)
-    final_df['price'] = final_df['price'].apply(lambda x:str(x))
-
-    return final_df
+    
+    if final_df.shape[0] > 1:
+        final_df.sort(columns='price', axis=0, ascending=True, inplace=True)
+        final_df['price'] = final_df['price'].apply(lambda x:str(x))
+        return final_df
+    else:
+        return None
