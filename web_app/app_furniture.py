@@ -14,7 +14,9 @@ def sofa_input():
 
 @app.route('/sofa_seeker', methods=['POST'])
 def sofa_seeker():
-    text = str(request.form['user_input'])
+    image_url = str(request.form['image_url'])
+    description = str(request.form['description'])
+    text = image_url+description
     return render_template('sofa_seeker.html', text=text)
 
 

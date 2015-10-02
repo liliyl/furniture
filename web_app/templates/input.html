@@ -72,17 +72,26 @@
                 <h1>{{cat}}</h1>
                 <hr>
                 <div class="header-content-inner-2">
-                    <p>Enter a {{cat.lower()}} product page URL here:</p>
+                    <p><b>Enter a {{cat.lower()}} image URL here:</b></p>
                 </div>
                     <div style="color:Black">
                         <form action={{form_action}} method='POST' >
-                        <input type="text" name="user_input" size="50" />
-                        <input type="submit" class="btn btn-primary btn-xl page-scroll"/>
+                        <input type="text" name="image_url" size="60" />
+                            <div style="margin-bottom:15px"></div>
+                            <div class="header-content-inner-2">
+                                <p><b>And a sofa description here:</b></p>
+                            </div>
+                        <input type="text" name="description" size="50" />
+                        <input type="submit" class="btn btn-primary btn-xl-2 page-scroll"/>
                         </form>  
                     </div>
+                    
+                        
+                    </div>
+
 <!-- 
                 <div class="header-content-inner-2">
-                    <p>Or enter a sofa image URL here:</p>
+                    <p>Enter a {{cat.lower()}} product page URL here:</p>
                 </div>
                     <div style="color:Black">
                         <form action="/sofa_seeker" method='POST' >
@@ -90,15 +99,7 @@
                         <input type="submit" class="btn btn-primary btn-xl page-scroll"/>
                         </form>  
                     </div>
-                <div class="header-content-inner-2">
-                    <p>and enter a sofa description here:</p>
-                </div>
-                    <div style="color:Black">
-                        <form action="/sofa_seeker" method='POST' >
-                        <input type="text" name="user_input" size="50" />
-                        <input type="submit" class="btn btn-primary btn-xl page-scroll"/>
-                        </form>  
-                    </div>
+
 -->
             </div>
         </div>
