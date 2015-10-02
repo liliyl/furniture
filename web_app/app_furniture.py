@@ -1,5 +1,8 @@
+import pandas as pd
 import cPickle as pickle
-
+import skimage
+from skimage.io import imread
+from recommender import recommender
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -15,9 +18,15 @@ def sofa_input():
 @app.route('/sofa_seeker', methods=['POST'])
 def sofa_seeker():
     image_url = str(request.form['image_url'])
-    description = str(request.form['description'])
-    text = image_url+description
-    return render_template('seeker.html', cat='Sofa', text=text, form_action="/sofa_seeker#portfolio")
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    
+    #if image_url[-4:] == '.jpg':
+    image = imread(image_url)
+
+    final_df = recommender(image=image, text=description, category='sofa', color=True, price_limit=1200)
+    base_path = '../static/img/wayfair/sofa/'
+
+    return render_template('seeker.html', cat='Sofa', df=final_df, base_path=base_path, form_action="/sofa_seeker#portfolio")
 
 
 # coffee_table_input
@@ -27,9 +36,6 @@ def sofa_seeker():
 # nightstand_input
 # bed_input
 # dresser_input
-
-# My maps
-
 
               #   <form action="/sofa_seeker" method='POST' >
               #     <input type="text" name="user_input" />

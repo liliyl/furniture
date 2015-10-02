@@ -49,7 +49,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="/#page-top">Minimalist Lifestyle</a>
+                <a class="navbar-brand page-scroll" href="/">Minimalist Lifestyle</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -99,123 +99,131 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Dang!</h2>
+                    <h2 class="section-heading">BOOM!!!</h2>
                     <h3 class="section-subheading text-muted">Here are the similar {{category}} we found for you!</h3>
                 </div>
             </div>
             <div style="margin-bottom:15px">
             </div>
             <div class="row">
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[0].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/bed_DRL1308_0.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[0].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Round Icons</h4>
-                        <p class="text-muted">Graphic Design</p>
+                        <h4>{{df.iloc[0].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[0].price}}</p>
                     </div>
                 </div>
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[1].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/bookcase_BLD1038_4.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[1].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Startup Framework</h4>
-                        <p class="text-muted">Website Design</p>
+                        <h4>{{df.iloc[1].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[1].price}}</p>
                     </div>
                 </div>
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[2].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/bookcase_BLD1038_4.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[2].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Treehouse</h4>
-                        <p class="text-muted">Website Design</p>
+                        <h4>{{df.iloc[2].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[2].price}}</p>
                     </div>
                 </div>
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[3].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/bookcase_BLD1038_4.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[3].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Golden</h4>
-                        <p class="text-muted">Website Design</p>
+                        <h4>{{df.iloc[3].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[3].price}}</p>
                     </div>
                 </div>
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[4].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/desk_BDI1503_0.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[4].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Escape</h4>
-                        <p class="text-muted">Website Design</p>
+                        <h4>{{df.iloc[4].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[4].price}}</p>
                     </div>
                 </div>
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[5].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/desk_BDI1503_0.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[5].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Dreams</h4>
-                        <p class="text-muted">Website Design</p>
+                        <h4>{{df.iloc[5].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[5].price}}</p>
                     </div>
                 </div>
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[6].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/desk_BDI1503_0.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[6].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Escape</h4>
-                        <p class="text-muted">Website Design</p>
+                        <h4>{{df.iloc[6].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[6].price}}</p>
                     </div>
                 </div>
+
                 <div class="col-md-3 col-sm-3 portfolio-item">
-                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
+                    <a href={{df.iloc[7].url}} class="portfolio-link" data-toggle="modal">
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content">
                                 <i class="fa fa-shopping-cart  fa-3x"></i>
                             </div>
                         </div>
-                        <img src="../static/img/portfolio/desk_BDI1503_0.jpg" class="img-responsive" alt="">
+                        <img src={{base_path + df.iloc[7].path}} class="img-responsive" alt="">
                     </a>
                     <div class="portfolio-caption">
-                        <h4>Dreams</h4>
-                        <p class="text-muted">Website Design</p>
+                        <h4>{{df.iloc[7].title}}</h4>
+                        <p class="text-muted">{{'$' + df.iloc[7].price}}</p>
                     </div>
                 </div>
 
@@ -260,8 +268,8 @@
     <!-- Custom Theme JavaScript -->
     <script src="../static/js/creative.js"></script>
 
-    <!-- Custom Theme JavaScript -->
-    <script src="../staticjs/agency.js"></script>
+    <!-- Custom Theme JavaScript 
+    <script src="../staticjs/agency.js"></script> -->
 
 </body>
 

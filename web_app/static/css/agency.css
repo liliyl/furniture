@@ -58,12 +58,14 @@
     padding: 25px;
     max-width: 400px;
     text-align: center;
-    background-color: #fff;
+    background-color: #E8E8E8;
+    height: 120px;
 }
 
 #portfolio .portfolio-item .portfolio-caption h4 {
     margin: 0;
     text-transform: none;
+    font-size: 14px;
 }
 
 #portfolio .portfolio-item .portfolio-caption p {
