@@ -18,7 +18,7 @@ def build_all_vec_info_json(category):
     start_time =  time.time()
     domi_color_dict = get_domi_color(paths, category)
     time_1 =  time.time()
-    print 'get_domi_color: ', time_1 - start_time
+    print 'Time to run get_domi_color (s): ', time_1 - start_time
 
 
     # Get PCAed features and pickle transformers:
@@ -89,4 +89,3 @@ def build_all_vec_info_json(category):
     all_info_df.to_json(path)
 
     return
-    
