@@ -6,6 +6,7 @@ from recommender import recommender
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
+
 # Home page:
 @app.route('/')
 def index():
@@ -53,11 +54,15 @@ def sofa_seeker():
     description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
     price_limit = str(request.form['price_limit'])
     
+    category = 'sofa'
+    cat = 'sofa'
+    form_action = "/" + category + "_seeker#portfolio"
+
     if len(image_url) > 0:
         try:
             image = imread(image_url)
         except IOError:
-            return render_template('input.html', cat='sofa', msg='Oops! That was not a image url. ', form_action="/sofa_seeker#portfolio")
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
     else:
         image = None
 
@@ -65,21 +70,261 @@ def sofa_seeker():
         try:
             price_limit = int(price_limit)
         except ValueError:
-            return render_template('input.html', cat='sofa', msg='Oops! Please enter a number in the price limit box. ', form_action="/sofa_seeker#portfolio")
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category='sofa', color=False, price_limit=price_limit)
-    base_path = '../static/img/wayfair/sofa/'
-
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
     if final_df is None:
-        return render_template('input.html', cat='sofa', msg='Oops! No items found! Please increase the price limit. ', form_action="/sofa_seeker#portfolio")
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
-    return render_template('seeker.html', cat='sofa', df=final_df, base_path=base_path, form_action="/sofa_seeker#portfolio")
+
+# Recommended items page - coffee table:
+@app.route('/coffee_table_seeker', methods=['POST'])
+def coffee_table_seeker():
+    image_url = str(request.form['image_url'])
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    price_limit = str(request.form['price_limit'])
+    
+    category = 'coffee_table'
+    cat = 'coffee table'
+    form_action = "/" + category + "_seeker#portfolio"
+
+    if len(image_url) > 0:
+        try:
+            image = imread(image_url)
+        except IOError:
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
+    else:
+        image = None
+
+    if len(price_limit) > 0:
+        try:
+            price_limit = int(price_limit)
+        except ValueError:
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
+    else:
+        price_limit = None
+
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    if final_df is None:
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
+# Recommended items page - dining table/chair:
+@app.route('/dining_seeker', methods=['POST'])
+def dining_seeker():
+    image_url = str(request.form['image_url'])
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    price_limit = str(request.form['price_limit'])
+    
+    category = 'dining'
+    cat = 'dining table/chair'
+    form_action = "/" + category + "_seeker#portfolio"
+
+    if len(image_url) > 0:
+        try:
+            image = imread(image_url)
+        except IOError:
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
+    else:
+        image = None
+
+    if len(price_limit) > 0:
+        try:
+            price_limit = int(price_limit)
+        except ValueError:
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
+    else:
+        price_limit = None
+
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    if final_df is None:
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
+# Recommended items page - bookcase:
+@app.route('/bookcase_seeker', methods=['POST'])
+def bookcase_seeker():
+    image_url = str(request.form['image_url'])
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    price_limit = str(request.form['price_limit'])
+    
+    category = 'bookcase'
+    cat = 'bookcase'
+    form_action = "/" + category + "_seeker#portfolio"
+
+    if len(image_url) > 0:
+        try:
+            image = imread(image_url)
+        except IOError:
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
+    else:
+        image = None
+
+    if len(price_limit) > 0:
+        try:
+            price_limit = int(price_limit)
+        except ValueError:
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
+    else:
+        price_limit = None
+
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    if final_df is None:
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
+
+
+# Recommended items page - office desk/chair:
+@app.route('/office_seeker', methods=['POST'])
+def office_seeker():
+    image_url = str(request.form['image_url'])
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    price_limit = str(request.form['price_limit'])
+    
+    category = 'office'
+    cat = 'office desk/chair'
+    form_action = "/" + category + "_seeker#portfolio"
+
+    if len(image_url) > 0:
+        try:
+            image = imread(image_url)
+        except IOError:
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
+    else:
+        image = None
+
+    if len(price_limit) > 0:
+        try:
+            price_limit = int(price_limit)
+        except ValueError:
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
+    else:
+        price_limit = None
+
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    if final_df is None:
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
+
+
+# Recommended items page - nightstand:
+@app.route('/nightstand_seeker', methods=['POST'])
+def nightstand_seeker():
+    image_url = str(request.form['image_url'])
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    price_limit = str(request.form['price_limit'])
+    
+    category = 'nightstand'
+    cat = 'nightstand'
+    form_action = "/" + category + "_seeker#portfolio"
+
+    if len(image_url) > 0:
+        try:
+            image = imread(image_url)
+        except IOError:
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
+    else:
+        image = None
+
+    if len(price_limit) > 0:
+        try:
+            price_limit = int(price_limit)
+        except ValueError:
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
+    else:
+        price_limit = None
+
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    if final_df is None:
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
+
+
+# Recommended items page - bed:
+@app.route('/bed_seeker', methods=['POST'])
+def bed_seeker():
+    image_url = str(request.form['image_url'])
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    price_limit = str(request.form['price_limit'])
+    
+    category = 'bed'
+    cat = 'bed'
+    form_action = "/" + category + "_seeker#portfolio"
+
+    if len(image_url) > 0:
+        try:
+            image = imread(image_url)
+        except IOError:
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
+    else:
+        image = None
+
+    if len(price_limit) > 0:
+        try:
+            price_limit = int(price_limit)
+        except ValueError:
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
+    else:
+        price_limit = None
+
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    if final_df is None:
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
+
+
+# Recommended items page - dresser:
+@app.route('/dresser_seeker', methods=['POST'])
+def dresser_seeker():
+    image_url = str(request.form['image_url'])
+    description = str(unicode(request.form['description']).encode('ascii', 'ignore'))
+    price_limit = str(request.form['price_limit'])
+    
+    category = 'dresser'
+    cat = 'dresser'
+    form_action = "/" + category + "_seeker#portfolio"
+
+    if len(image_url) > 0:
+        try:
+            image = imread(image_url)
+        except IOError:
+            return render_template('input.html', cat=cat, msg='Oops! That was not a image url. ', form_action=form_action)
+    else:
+        image = None
+
+    if len(price_limit) > 0:
+        try:
+            price_limit = int(price_limit)
+        except ValueError:
+            return render_template('input.html', cat=cat, msg='Oops! Please enter a number in the price limit box. ', form_action=form_action)
+    else:
+        price_limit = None
+
+    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    if final_df is None:
+        return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
+    
+    base_path = '../static/img/wayfair/' + category + '/'
+    return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
 if __name__ == '__main__':
