@@ -6,13 +6,13 @@ from recommender import recommender
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-# home page
+# Home page:
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# input pages
+# Input pages for 8 categories:
 @app.route('/sofa_input')
 def sofa_input():
     return render_template('input.html', cat='sofa', msg='', form_action="/sofa_seeker#portfolio")
@@ -46,7 +46,7 @@ def dresser_input():
     return render_template('input.html', cat='dresser', msg='', form_action="/dresser_seeker#portfolio")
 
 
-# recommended item pages - sofa:
+# Recommended items page - sofa:
 @app.route('/sofa_seeker', methods=['POST'])
 def sofa_seeker():
     image_url = str(request.form['image_url'])

@@ -54,7 +54,7 @@ def recommender(image, text, category, n_recomm_items=8, color=False, price_limi
     # Get recommended items in final_df:
     domi_weight = 1
     if color:
-        domi_weight = 5
+        domi_weight = 10
 
     all_info_df['total_distance'] = all_info_df['domi_distance'] * domi_weight + all_info_df['pca_distance']/500 + all_info_df['text_distance']
 
