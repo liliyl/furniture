@@ -52,7 +52,7 @@ def recommender(image, text, category, n_recomm_items=8, color=False, price_limi
 
 
     # Get recommended items in final_df:
-    domi_weight = 1
+    domi_weight = 2
     if color:
         domi_weight = 10
 
