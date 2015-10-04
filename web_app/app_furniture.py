@@ -2,9 +2,14 @@ import pandas as pd
 import cPickle as pickle
 import skimage
 from skimage.io import imread
-from recommender import recommender
+from recommender_2 import recommender
 from flask import Flask, render_template, request
 app = Flask(__name__)
+
+pca_scaler_dict = {}
+pca_model_dict = {}
+tfidf_dict = {}
+all_info_df_dict = {}
 
 
 # Home page:
@@ -74,7 +79,10 @@ def sofa_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -109,7 +117,10 @@ def coffee_table_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -144,7 +155,10 @@ def dining_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+    
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -179,7 +193,10 @@ def bookcase_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+    
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -214,7 +231,10 @@ def office_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+    
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -249,7 +269,10 @@ def nightstand_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+    
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -284,7 +307,10 @@ def bed_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+    
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -319,7 +345,10 @@ def dresser_seeker():
     else:
         price_limit = None
 
-    final_df = recommender(image=image, text=description, category=category, color=False, price_limit=price_limit)
+    final_df = recommender(image=image, text=description, category=category, pca_scaler_dict=pca_scaler_dict, 
+        pca_model_dict=pca_model_dict, tfidf_dict=tfidf_dict, all_info_df_dict=all_info_df_dict,
+        color=False, price_limit=price_limit)
+    
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
@@ -327,5 +356,30 @@ def dresser_seeker():
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
+def init_server():
+    # Unpickling transformers and loading json:
+    categories = ['sofa', 'coffee_table', 'office', 'dining', 'bookcase', 'nightstand', 'bed', 'dresser']
+
+    for category in categories:
+
+        path = 'static/pickle/' + category + '_pca_scaler.pkl'
+        with open(path) as f:
+            pca_scaler_dict[category] = pickle.load(f)
+
+        path = 'static/pickle/' + category + '_pca_model.pkl'
+        with open(path) as f:
+            pca_model_dict[category] = pickle.load(f)
+
+        path = 'static/pickle/' + category + '_tfidf.pkl'
+        with open(path) as f:
+            tfidf_dict[category]  = pickle.load(f)
+
+        path = 'static/json/' + category + '_vec_info.json'
+        all_info_df_dict[category] = pd.read_json(path)
+
+    return
+
+
 if __name__ == '__main__':
+    init_server()
     app.run(host='0.0.0.0', port=8080, debug=True)

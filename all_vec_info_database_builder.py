@@ -5,8 +5,7 @@ import time
 from collections import defaultdict
 from scipy.spatial.distance import cosine, euclidean
 from sklearn.feature_extraction.text import TfidfVectorizer
-from image_processing_new import get_paths, get_domi_color, image_featurizer
-
+from image_processing import get_paths, get_domi_color, image_featurizer
 
 def build_all_vec_info_json(category):
 
@@ -89,3 +88,8 @@ def build_all_vec_info_json(category):
     all_info_df.to_json(path)
 
     return
+
+if __name__ == '__main__':
+    categories = ['sofa', 'coffee_table', 'office', 'dining', 'bookcase', 'nightstand', 'bed', 'dresser']
+    for category in categories:
+        build_all_vec_info_json(category)

@@ -38,4 +38,5 @@ Thumbs.db
 
 # python generated file
 ######################
-.pyc
+**/*.pyc
+.ipynb_checkpoints/

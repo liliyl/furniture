@@ -76,18 +76,19 @@ def get_domi_color(paths, category):
         
         flag = False
         for color in domi_colors_all:
-            if np.mean(color > white_color_arr) == 1:
+            if flag:
+                domi_color = color
+            elif np.mean(color > white_color_arr) == 1:
                 flag = True
             else:
                 domi_color = color
 
         if not flag:    
-            # new_path = 'wayfair/images/' + category + '/background/' + path
-            # skimage.io.imsave(new_path, image)
-            domi_color_dict[path] = False 
+            new_path = 'wayfair/images/' + category + '/background/' + path
+            skimage.io.imsave(new_path, image)
         else:
-            # new_path = 'wayfair/images/' + category + '/white/' + path
-            # skimage.io.imsave(new_path, image)
+            new_path = 'wayfair/images/' + category + '/white/' + path
+            skimage.io.imsave(new_path, image)
             domi_color_dict[path] = domi_color 
 
     print '# of grayscaled photos: ', gray
@@ -95,6 +96,88 @@ def get_domi_color(paths, category):
     return domi_color_dict
 
 
+
+def image_featurizer(category, sub_dir='white', edge=False, pca=True):
+
+    '''
+    Taking image file path info and using ImagePipeline to vectorize images within the category.
+
+    INPUT:
+        sub_dir: string
+        edge: boolean
+        pca: boolean
+
+    OUTPUT:
+        feature_dict: dictionary
+            key: path (filename)
+            value: vectorized image
+    '''
+    
+    base_path = 'wayfair/images/' + category + '/'
+    image_pipe = ImagePipeline(base_path)
+    image_pipe.read(sub_dirs=(sub_dir,))
+
+    image_pipe.resize((150,150,3))
+    image_pipe.transform(skimage.color.rgb2gray, {})
+    if edge:
+        image_pipe.transform(skimage.feature.canny, {})
+
+    image_pipe.vectorize()
+    features = image_pipe.features
+
+    if pca:
+        scaler = StandardScaler()
+        features_scaled = scaler.fit_transform(features)
+        pca_model = PCA(n_components=100)
+        pca_data = pca_model.fit_transform(features_scaled)
+        features = pca_data
+
+
+    paths = os.listdir(base_path + sub_dir)
+    paths = [x for x in paths if x[0] != '.']
+
+    feature_dict = {}
+    for i in xrange(len(paths)):
+        path = paths[i]
+        feature = features[i]
+        feature_dict[path] = feature
+
+    if pca:
+        return feature_dict, scaler, pca_model
+    else:
+        return feature_dict
+        
+
+
+# ----------------------------------------------------------------------------
+# For new images: 
+# ----------------------------------------------------------------------------
+
+def get_domi_color_new_image(image, n_clusters=2):
+    
+    if len(image.shape) == 3:
+        image = transform.resize(image, (300,300,3))
+    else:
+        return -1
+
+    nrow, ncol, depth = image.shape 
+    lst_of_pixels = [image[irow][icol] for irow in range(nrow) for icol in range(ncol)]
+    kmean = KMeans(n_clusters=n_clusters)
+    kmean.fit_transform(lst_of_pixels)
+    domi_colors_all = kmean.cluster_centers_ 
+    white_color_arr = np.array([0.95, 0.95, 0.95])
+
+    domi_color = None
+    for color in domi_colors_all:
+        if np.mean(color > white_color_arr) != 1:
+            domi_color = color
+    return domi_color
+
+
+
+# ----------------------------------------------------------------------------
+# For trying out color distribution vectorizaiton: 
+# ----------------------------------------------------------------------------
 
 def vectorize_color_distribution(paths, category):
     
@@ -111,7 +194,6 @@ def vectorize_color_distribution(paths, category):
     color_dist_dict = {}
     
     for path in paths:
-        #category = '_'.join(path.split('_')[0:-2])
         
         image = skimage.io.imread('wayfair/images/' + category + '/' + path)
         image = transform.resize(image, (300,300,3))
@@ -139,6 +221,10 @@ def vectorize_color_distribution(paths, category):
     return color_dist_dict
 
 
+
+# ----------------------------------------------------------------------------
+# For testing vectorizing results by clustering: 
+# ----------------------------------------------------------------------------
 
 def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, domi_color=True):
     '''
@@ -185,56 +271,6 @@ def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, 
     
     return cluster_label_dict, color_centroids, km_color
 
-
-
-def image_featurizer(category, sub_dir='white', edge=False, pca=False):
-
-    '''
-    Taking image file path info and using ImagePipeline to vectorize images within the folder.
-
-    INPUT:
-        sub_dir: string
-        edge: boolean
-        pca: boolean
-
-    OUTPUT:
-        feature_dict: dictionary
-            key: path (filename)
-            value: vectorized image
-    '''
-    base_path = 'wayfair/images/' + category + '/'
-    image_pipe = ImagePipeline(base_path)
-    image_pipe.read(sub_dirs=(sub_dir,))
-
-    image_pipe.resize((150,150,3))
-    image_pipe.transform(skimage.color.rgb2gray, {})
-    if edge:
-        image_pipe.transform(skimage.feature.canny, {})
-
-    image_pipe.vectorize()
-    features = image_pipe.features
-
-    if pca:
-        scaler = StandardScaler()
-        features_scaled = scaler.fit_transform(features)
-        pca_model = PCA(n_components=100)
-        pca_data = pca_model.fit_transform(features_scaled)
-        features = pca_data
-
-
-    paths = os.listdir(base_path + sub_dir)
-    paths = [x for x in paths if x[0] != '.']
-
-    feature_dict = {}
-    for i in xrange(len(paths)):
-        path = paths[i]
-        feature = features[i]
-        feature_dict[path] = feature
-
-    if pca:
-        return feature_dict, scaler, pca_model
-    else:
-        return feature_dict
 
 
 def clustering_with_feature(feature_dict, category, n_clusters=10, pca=False, save_image=True, edge=False):
@@ -285,27 +321,3 @@ def clustering_with_feature(feature_dict, category, n_clusters=10, pca=False, sa
     return cluster_label_dict, feature_centroids, km_feature
 
 
-
-# ----------------------------------------------------------------------------
-# For new images: 
-# ----------------------------------------------------------------------------
-
-def get_domi_color_new_image(image, n_clusters=2):
-    
-    if len(image.shape) == 3:
-        image = transform.resize(image, (300,300,3))
-    else:
-        return -1
-
-    nrow, ncol, depth = image.shape 
-    lst_of_pixels = [image[irow][icol] for irow in range(nrow) for icol in range(ncol)]
-    kmean = KMeans(n_clusters=n_clusters)
-    kmean.fit_transform(lst_of_pixels)
-    domi_colors_all = kmean.cluster_centers_ 
-    white_color_arr = np.array([0.98, 0.98, 0.98])
-
-    domi_color = None
-    for color in domi_colors_all:
-        if np.mean(color > white_color_arr) != 1:
-            domi_color = color
-    return domi_color

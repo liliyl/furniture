@@ -8,23 +8,13 @@ from image_processing_app import get_domi_color_new_image
 from scipy.spatial.distance import cosine, euclidean
 
 
-def recommender(image, text, category, n_recomm_items=8, color=False, price_limit=None):
+def recommender(image, text, category, pca_scaler_dict, pca_model_dict, tfidf_dict, 
+    all_info_df_dict, n_recomm_items=8, color=False, price_limit=None):
 
-    # Unpickling transformers and loading json:
-    path = 'static/pickle/' + category + '_pca_scaler.pkl'
-    with open(path) as f:
-        pca_scaler = pickle.load(f)
-
-    path = 'static/pickle/' + category + '_pca_model.pkl'
-    with open(path) as f:
-        pca_model = pickle.load(f)
-
-    path = 'static/pickle/' + category + '_tfidf.pkl'
-    with open(path) as f:
-        tfidf  = pickle.load(f)
-
-    path = 'static/json/' + category + '_vec_info.json'
-    all_info_df = pd.read_json(path)
+    pca_scaler = pca_scaler_dict[category]
+    pca_model = pca_model_dict[category]
+    tfidf = tfidf_dict[category]
+    all_info_df = all_info_df_dict[category]
 
     if image is not None:
         # Dominant color
