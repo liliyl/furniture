@@ -86,7 +86,7 @@ def sofa_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -124,7 +124,7 @@ def coffee_table_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -162,7 +162,7 @@ def dining_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -200,7 +200,7 @@ def bookcase_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -238,7 +238,7 @@ def office_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -276,7 +276,7 @@ def nightstand_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -314,7 +314,7 @@ def bed_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -352,7 +352,7 @@ def dresser_seeker():
     if final_df is None:
         return render_template('input.html', cat=cat, msg='Oops! No items found! Please increase the price limit. ', form_action=form_action)
     
-    base_path = '../data/image/' + category + '/'
+    base_path = '../static/img/wayfair/' + category + '/'
     return render_template('seeker.html', cat=cat, df=final_df, base_path=base_path, form_action=form_action)
 
 
@@ -374,7 +374,7 @@ def init_server():
         with open(path) as f:
             tfidf_dict[category]  = pickle.load(f)
 
-        path = 'data/json/' + category + '_vec_info.json'
+        path = 'data/' + category + '_vec_info.json'
         all_info_df_dict[category] = pd.read_json(path)
 
     return
