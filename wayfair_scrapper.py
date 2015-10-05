@@ -188,20 +188,22 @@ def multithreading_image_scrapper(df, category):
 
 
 if __name__ == '__main__':
+
+    # Base link for each category:
     base_link_dict = {}
-    base_link_dict[sofa] = 'http://www.wayfair.com/Sofas-C413892.html?&curpage='
-    base_link_dict[sofa_bed] = 'http://www.wayfair.com/Sofa-Beds-C413895.html?&curpage='
-    base_link_dict[futon] = 'http://www.wayfair.com/Futons-C1780368.html?&curpage='
-    base_link_dict[loveseat] = 'http://www.wayfair.com/Loveseats-C413896.html?&curpage='
-    base_link_dict[coffee_table] = 'http://www.wayfair.com/Coffee-Tables-C414602.html?&curpage='
-    base_link_dict[desk] = 'http://www.wayfair.com/All-Desks-C1780384.html?&curpage='
-    base_link_dict[office_chair] = 'http://www.wayfair.com/All-Office-Chairs-C478390.html?&curpage='
-    base_link_dict[bookcase] = 'http://www.wayfair.com/All-Bookcases-C1780385.html?&curpage='
-    base_link_dict[dining_table] = 'http://www.wayfair.com/Kitchen-and-Dining-Tables-C46129.html?&curpage='
-    base_link_dict[dining_chair] = 'http://www.wayfair.com/Kitchen-and-Dining-Chairs-C46130.html?&curpage='
-    base_link_dict[bed] = 'http://www.wayfair.com/Beds-C46122.html?&curpage='
-    base_link_dict[nightstand] = 'http://www.wayfair.com/Nightstands-C46062.html?&curpage='
-    base_link_dict[dresser] = 'http://www.wayfair.com/Dressers-C46091.html?&curpage='
+    base_link_dict['sofa'] = 'http://www.wayfair.com/Sofas-C413892.html?&curpage='
+    base_link_dict['sofa_bed'] = 'http://www.wayfair.com/Sofa-Beds-C413895.html?&curpage='
+    base_link_dict['futon'] = 'http://www.wayfair.com/Futons-C1780368.html?&curpage='
+    base_link_dict['loveseat'] = 'http://www.wayfair.com/Loveseats-C413896.html?&curpage='
+    base_link_dict['coffee_table'] = 'http://www.wayfair.com/Coffee-Tables-C414602.html?&curpage='
+    base_link_dict['desk'] = 'http://www.wayfair.com/All-Desks-C1780384.html?&curpage='
+    base_link_dict['office_chair'] = 'http://www.wayfair.com/All-Office-Chairs-C478390.html?&curpage='
+    base_link_dict['bookcase'] = 'http://www.wayfair.com/All-Bookcases-C1780385.html?&curpage='
+    base_link_dict['dining_table'] = 'http://www.wayfair.com/Kitchen-and-Dining-Tables-C46129.html?&curpage='
+    base_link_dict['dining_chair'] = 'http://www.wayfair.com/Kitchen-and-Dining-Chairs-C46130.html?&curpage='
+    base_link_dict['bed'] = 'http://www.wayfair.com/Beds-C46122.html?&curpage='
+    base_link_dict['nightstand'] = 'http://www.wayfair.com/Nightstands-C46062.html?&curpage='
+    base_link_dict['dresser'] = 'http://www.wayfair.com/Dressers-C46091.html?&curpage='
 
     categories = ['sofa', 'sofa_bed', 'futon', 'loveseat', 'coffee_table', 'desk', 'office_chair', 
                     'dining_table', 'dining_chair', 'bookcase', 'nightstand', 'bed', 'dresser']
