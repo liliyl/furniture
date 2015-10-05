@@ -362,15 +362,15 @@ def init_server():
 
     for category in categories:
 
-        path = 'data/pickle/' + category + '_pca_scaler.pkl'
+        path = 'data/pickled_model/' + category + '_pca_scaler.pkl'
         with open(path) as f:
-            pca_scaler_dict[category] = pickle.load(f)
+            f
 
-        path = 'data/pickle/' + category + '_pca_model.pkl'
+        path = 'data/pickled_model/' + category + '_pca_model.pkl'
         with open(path) as f:
             pca_model_dict[category] = pickle.load(f)
 
-        path = 'data/pickle/' + category + '_tfidf.pkl'
+        path = 'data/pickled_model/' + category + '_tfidf.pkl'
         with open(path) as f:
             tfidf_dict[category]  = pickle.load(f)
 
