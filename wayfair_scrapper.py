@@ -1,11 +1,13 @@
 import pandas as pd
 import random
+import urllib
+import threading
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 from time import sleep
 
 
-def get_wayfair_product_links(link, num_pages=1):
+def get_wayfair_product_links(base_link, num_pages=1):
 
     '''
     INPUT: 
@@ -21,7 +23,7 @@ def get_wayfair_product_links(link, num_pages=1):
 
 
     for num in range(1,num_pages+1):
-        html  = urlopen(link+str(num))
+        html  = urlopen(base_link+str(num))
         soup = BeautifulSoup(html, 'html.parser')
         productbox = soup.findAll('a', {'class':'productbox'})
         product_links.extend([s['href'] for s in productbox])
@@ -31,11 +33,11 @@ def get_wayfair_product_links(link, num_pages=1):
 
 
 
-def wayfair_product_info_scrapper(link, category_input):
+def wayfair_product_info_scrapper(link, category):
     '''
     INPUT: 
     * one product URL link 
-    * category name
+    * category
     
     OUTPUT:
     A product info dictionary with the following keys:
@@ -60,15 +62,11 @@ def wayfair_product_info_scrapper(link, category_input):
     
     '''
 
-#     import requests
-#     html = requests.get(link, timeout=100)
-
     html  = urlopen(link, timeout=100)
     soup = BeautifulSoup(html, 'html.parser')
     
     product_id = soup.find('span', {'class': 'product_breadcrumb'}).text.split(':')[1]
     website = 'wayfair'
-    category = category_input
     url = link
     title = soup.find('span', {'class':'title_name'}).text.strip()
     price = soup.find('div', {'class':'dynamic_sku_price'}).text.strip()
@@ -159,3 +157,72 @@ def wayfair_product_info_scrapper(link, category_input):
     
     sleep(random.random())
     return product_info_dict
+
+
+def wayfair_image_scrapper(indices, category):
+    image = urllib.URLopener()
+    for i in indices:
+        i = int(i)
+        product_id = str(df.ix[i,'product_id'].strip())
+        img_links = df.ix[i,'image_links_all']
+
+        for j, link in enumerate(img_links):
+            image.retrieve(link, 'wayfair/images/%s/%s_%s_%s.jpg' % (category, category, product_id, str(j)))
+
+
+def multithreading_image_scrapper(df, category):
+    index = df.index.values
+    threads = []
+    for i in xrange(0, 11):
+        start = i*100
+        if (i+1)*100 > 1008:       
+            end = 1008       
+        else:
+            end = (i+1)*100
+        indices = tuple(index[start:end])
+        t = threading.Thread(target=wayfair_image_scrapper, args=(indices, category))
+        threads.append(t)
+
+    for thread in threads: thread.start()
+    for thread in threads: thread.join()
+
+
+if __name__ == '__main__':
+    base_link_dict = {}
+    base_link_dict[sofa] = 'http://www.wayfair.com/Sofas-C413892.html?&curpage='
+    base_link_dict[sofa_bed] = 'http://www.wayfair.com/Sofa-Beds-C413895.html?&curpage='
+    base_link_dict[futon] = 'http://www.wayfair.com/Futons-C1780368.html?&curpage='
+    base_link_dict[loveseat] = 'http://www.wayfair.com/Loveseats-C413896.html?&curpage='
+    base_link_dict[coffee_table] = 'http://www.wayfair.com/Coffee-Tables-C414602.html?&curpage='
+    base_link_dict[desk] = 'http://www.wayfair.com/All-Desks-C1780384.html?&curpage='
+    base_link_dict[office_chair] = 'http://www.wayfair.com/All-Office-Chairs-C478390.html?&curpage='
+    base_link_dict[bookcase] = 'http://www.wayfair.com/All-Bookcases-C1780385.html?&curpage='
+    base_link_dict[dining_table] = 'http://www.wayfair.com/Kitchen-and-Dining-Tables-C46129.html?&curpage='
+    base_link_dict[dining_chair] = 'http://www.wayfair.com/Kitchen-and-Dining-Chairs-C46130.html?&curpage='
+    base_link_dict[bed] = 'http://www.wayfair.com/Beds-C46122.html?&curpage='
+    base_link_dict[nightstand] = 'http://www.wayfair.com/Nightstands-C46062.html?&curpage='
+    base_link_dict[dresser] = 'http://www.wayfair.com/Dressers-C46091.html?&curpage='
+
+    categories = ['sofa', 'sofa_bed', 'futon', 'loveseat', 'coffee_table', 'desk', 'office_chair', 
+                    'dining_table', 'dining_chair', 'bookcase', 'nightstand', 'bed', 'dresser']
+
+    # Product info scrapping:
+    for category in categories:
+        product_links = get_wayfair_product_links(base_link_dict[category], num_pages=20)
+        link_0 = product_links[0]
+        dict_0 = wayfair_product_info_scrapper(link_0, category_input= category)
+        df = pd.DataFrame([dict_0], index=[0])
+        i = 1
+        for link in sofa_bed_links[1:]:
+            product_dict = wayfair_product_info_scrapper(link, category_input=category)
+            df_product = pd.DataFrame([product_dict], index=[i])
+            df = pd.concat([df, df_product], axis=0)
+            i += 1
+        df.to_json('wayfair/%s.json' % category)
+
+
+    # Image scrapping: 
+    for category in categories:
+        df = pd.read_json('wayfair/%s.json' % category)
+        multithreading_image_scrapper(df, category)
+   
