@@ -74,9 +74,9 @@
             <div class="header-content-inner">
                 <h1>{{cat}}</h1>
                 <hr>
-                <div class="header-content-inner-2">
+                    <div class="header-content-inner-2">
                     <p><b>{{msg}}Enter a {{cat.lower()}} image (w/ white background) URL here:</b></p>
-                </div>
+                    </div>
                     <div style="color:Black">
                         <form action={{form_action}} method='POST' >
                         <input type="text" name="image_url" size="60" />
@@ -85,33 +85,20 @@
                             <div class="header-content-inner-2">
                                 <p><b>And/or the description here:</b></p>
                             </div>
-                        <input type="text" name="description" size="60" />
-                        
+                                <input type="text" name="description" size="60" />
                             <div style="margin-bottom:10px">
                             </div>
-                        <div class="header-content-inner-2">
+                            <div class="header-content-inner-2">
                                 <p><b><span style="font-size:14px"> Wanna add a price limit? Sure! Enter here:   $</b></span>
-                                   <span style="color:Black;font-size:14px"><input type="text" name="price_limit" size="4" /></span>     <input type="submit" class="btn btn-primary btn-xl-2 page-scroll"/>
+                                   <span style="color:Black;font-size:14px">
+                                    <input type="text" name="price_limit" size="4" /></span>
+                                    <input type="submit" class="btn btn-primary btn-xl-2 page-scroll"/>
                                 </p>
                                 
-                        </div>
-                        
+                            </div>
                         </form>  
                     </div>            
             </div>
-
-<!-- 
-                <div class="header-content-inner-2">
-                    <p>Enter a {{cat.lower()}} product page URL here:</p>
-                </div>
-                    <div style="color:Black">
-                        <form action="/sofa_seeker" method='POST' >
-                        <input type="text" name="user_input" size="50" />
-                        <input type="submit" class="btn btn-primary btn-xl page-scroll"/>
-                        </form>  
-                    </div>
-
--->
         </div>
     </header>
 
@@ -122,7 +109,7 @@
             <div class="row no-gutter">
 
 
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="/sofa_input" class="portfolio-box">
                         <img src="../static/img/category/sofa.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -139,7 +126,7 @@
                 </div>
 
 
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="/coffee_table_input" class="portfolio-box">
                         <img src="../static/img/category/coffee_table.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -154,7 +141,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="/dining_input" class="portfolio-box">
                         <img src="../static/img/category/dining.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -170,7 +157,7 @@
                     </a>
                 </div>
 
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="/office_input" class="portfolio-box">
                         <img src="../static/img/category/office.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -185,7 +172,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="/bookcase_input" class="portfolio-box">
                         <img src="../static/img/category/bookcase.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -201,7 +188,7 @@
                     </a>
                 </div>
 
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="nightstand_input" class="portfolio-box">
                         <img src="../static/img/category/nightstand.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -216,7 +203,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="bed_input" class="portfolio-box">
                         <img src="../static/img/category/bed.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -231,7 +218,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-4 col-sm-3">
+                <div class="col-lg-3 col-sm-3">
                     <a href="dresser_input" class="portfolio-box">
                         <img src="../static/img/category/dresser.jpg" class="img-responsive" alt="">
                         <div class="portfolio-box-caption">
@@ -257,17 +244,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <h2 class="section-heading">Let's Get In Touch!</h2>
+                    <h2 class="section-heading">Contact Lili</h2>
                     <hr class="primary">
-                    <p>Got some feedback? That's great! Send me an email and I will get back to you as soon as possible!</p>
+                    <p>Hey! This is Lili Yao. Furniture Seeker is my capstone project for the Galvanize Data Science Immersive Program.</p>
+                    <p>Feel free to contact me with any feedback and questions!</p>
                 </div>
                 <div class="col-lg-4 col-lg-offset-2 text-center">
-                    <i class="fa fa-phone fa-3x wow bounceIn"></i>
-                    <p>123-456-6789</p>
-                </div>
-                <div class="col-lg-4 text-center">
                     <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
                     <p><a href="mailto:your-email@your-domain.com">lilytuna@gmail.com</a></p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fa fa-github fa-3x wow bounceIn" data-wow-delay=".1s"></i>
+                    <p><a href="https://github.com/liliyl/furniture">github.com/liliyl/</a></p>
                 </div>
             </div>
         </div>
