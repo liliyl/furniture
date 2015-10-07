@@ -101,7 +101,7 @@ aside {
 .navbar-default .nav > li>a,
 .navbar-default .nav>li>a:focus {
     text-transform: uppercase;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     color: #222;
 }
@@ -153,7 +153,7 @@ aside {
     }
 
     .navbar-default.affix .navbar-header .navbar-brand {
-        font-size: 14px;
+        font-size: 16px;
         color: #f05f40;
     }
 
