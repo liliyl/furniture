@@ -1,4 +1,3 @@
-
 import numpy as np
 import os.path
 from sklearn.cluster import KMeans
@@ -7,73 +6,56 @@ from sklearn.decomposition import PCA
 
 import skimage
 from skimage import transform
-
 from pyimage.pipeline import ImagePipeline
 
-
-
-def get_paths(category, image=True, white=False):
-    base_path = 'wayfair/images/' 
-    if white:
-        paths = os.listdir(base_path + category + '/white')
-    else:
-        paths = os.listdir(base_path + category)
-
-    if image:
-        paths = [x for x in paths if x[-3:] == 'jpg']
-    else:
-        paths = [x for x in paths if x[0] != '.']
-
-    return paths
-
-
+# ----------------------------------------------------------------------------
+# Main image processing functions: 
+# ----------------------------------------------------------------------------
 
 def get_domi_color(paths, category):
     '''
-    For all files in paths, tease out photos without a clear white background 
-    and save those into the 'background' folder.
-    For those with white background, save them to the 'white' folder.
-    Then get the dominant furniture color for images with white background.
+    For all images in paths, select those with a white background, 
+    save them to the 'white' folder and get the dominant color 
+    for the furniture in each image.
+    For the rest images (without a white background), save them 
+    into the 'non-white' folder.
 
     INPUT:
-        paths: list
+        paths: list of strings
             paths of image files
-
+        category: string
     OUTPUT:
         domi_color_dict: dictionary
             key: path 
-            value: dominant color (just one) if the image has a white background.
-                   'False' if the image doesn't have a white background.
+            value: dominant color of the image.
     '''
 
     domi_color_dict = {}
-    
+    grayscale = 0
+
     for path in paths:
-        #category = '_'.join(path.split('_')[0:-2])
         image = skimage.io.imread('wayfair/images/' + category + '/' + path)
         
-        # If the picture is grayscale, discard it for now. Think about how to improve it later.
-        
-        gray = 0
+        # Check if the picture is grayscale:
         if len(image.shape) == 2:
-            gray += 1
-            # print 'gray'
+            grayscale += 1
             continue
             
         image = transform.resize(image, (300,300,3))
 
+        # Flatten the image matrix:
         nrow, ncol, depth = image.shape 
         lst_of_pixels = [image[irow][icol] for irow in range(nrow) for icol in range(ncol)]
 
+        # Clustering the colors of each pixel:
         kmean1 = KMeans(n_clusters=2)
         kmean1.fit_transform(lst_of_pixels)
-        domi_colors_all = kmean1.cluster_centers_ 
-        white_color_arr = np.array([0.98, 0.98, 0.98])
+        domi_colors_all = kmean1.cluster_centers_
 
-        """Remove photos without clean white background:
-            If one of the two dominant color is perfectly white, 
-            then the photo has a clean white background and flag=True."""
-        
+        # Select images with a white background:
+            # If one of the two dominant color is perfectly white, 
+            # then the image has a clean white background and flag=True.
+        white_color_arr = np.array([0.98, 0.98, 0.98])
         flag = False
         for color in domi_colors_all:
             if flag:
@@ -83,26 +65,25 @@ def get_domi_color(paths, category):
             else:
                 domi_color = color
 
+        # Save images to different folders depend on their backgrounds:
         if not flag:    
-            new_path = 'wayfair/images/' + category + '/background/' + path
+            new_path = 'wayfair/images/' + category + '/non-white/' + path
             skimage.io.imsave(new_path, image)
         else:
             new_path = 'wayfair/images/' + category + '/white/' + path
             skimage.io.imsave(new_path, image)
             domi_color_dict[path] = domi_color 
 
-    print '# of grayscaled photos: ', gray
-        
+    print '# of grayscaled photos: ', grayscale
     return domi_color_dict
 
 
-
 def image_featurizer(category, sub_dir='white', edge=False, pca=True):
-
     '''
-    Taking image file path info and using ImagePipeline to vectorize images within the category.
+    Vectorize images (with white backgrounds) within the category.
 
     INPUT:
+        category: string
         sub_dir: string
         edge: boolean
         pca: boolean
@@ -111,8 +92,11 @@ def image_featurizer(category, sub_dir='white', edge=False, pca=True):
         feature_dict: dictionary
             key: path (filename)
             value: vectorized image
+        scaler: trained StandardScaler
+        pca_model: trained PCA model
     '''
-    
+
+    # Use ImagePipeline to read and transform the images:
     base_path = 'wayfair/images/' + category + '/'
     image_pipe = ImagePipeline(base_path)
     image_pipe.read(sub_dirs=(sub_dir,))
@@ -125,6 +109,7 @@ def image_featurizer(category, sub_dir='white', edge=False, pca=True):
     image_pipe.vectorize()
     features = image_pipe.features
 
+    # Do PCA if pca is passed in as true:
     if pca:
         scaler = StandardScaler()
         features_scaled = scaler.fit_transform(features)
@@ -132,10 +117,9 @@ def image_featurizer(category, sub_dir='white', edge=False, pca=True):
         pca_data = pca_model.fit_transform(features_scaled)
         features = pca_data
 
-
+    # Organize vectorized images into the dictionary (feature_dict):
     paths = os.listdir(base_path + sub_dir)
     paths = [x for x in paths if x[0] != '.']
-
     feature_dict = {}
     for i in xrange(len(paths)):
         path = paths[i]
@@ -146,7 +130,6 @@ def image_featurizer(category, sub_dir='white', edge=False, pca=True):
         return feature_dict, scaler, pca_model
     else:
         return feature_dict
-        
 
 
 # ----------------------------------------------------------------------------
@@ -154,25 +137,37 @@ def image_featurizer(category, sub_dir='white', edge=False, pca=True):
 # ----------------------------------------------------------------------------
 
 def get_domi_color_new_image(image, n_clusters=2):
+    '''
+    INPUT:
+        image: numpy array
+        n_clusters: integer
+
+    OUTPUT:
+        domi_color: numpy array
+    '''
     
     if len(image.shape) == 3:
         image = transform.resize(image, (300,300,3))
     else:
         return -1
 
+    # Flatten the image matrix:
     nrow, ncol, depth = image.shape 
     lst_of_pixels = [image[irow][icol] for irow in range(nrow) for icol in range(ncol)]
+
+    # Clustering the colors of each pixel:
     kmean = KMeans(n_clusters=n_clusters)
     kmean.fit_transform(lst_of_pixels)
-    domi_colors_all = kmean.cluster_centers_ 
-    white_color_arr = np.array([0.95, 0.95, 0.95])
+    domi_colors = kmean.cluster_centers_
 
+    # Get the non-white dominant color:
+    white_color_arr = np.array([0.90, 0.90, 0.90])
     domi_color = None
-    for color in domi_colors_all:
-        if np.mean(color > white_color_arr) != 1:
-            domi_color = color
+    if np.mean(domi_colors[0] > white_color_arr) != 1:
+        domi_color = domi_colors[0]
+    else:
+        domi_color = domi_colors[1]
     return domi_color
-
 
 
 # ----------------------------------------------------------------------------
@@ -180,15 +175,16 @@ def get_domi_color_new_image(image, n_clusters=2):
 # ----------------------------------------------------------------------------
 
 def vectorize_color_distribution(paths, category):
-    
-    '''INPUT:
-            paths: list of strings
-                file paths
-       OUTPUT:
-            color_dist_dict: dictionary 
-                key: path 
-                value: vectorized color distribution (a 1D numpy array of 30 numbers representing RBG 
-                                                        intensities, 10 numbers for each color)
+    '''
+    INPUT:
+        paths: list of strings
+            paths of image files
+        category: string
+    OUTPUT:
+        color_dist_dict: dictionary 
+            key: path 
+            value: vectorized color distribution (a 1*30 numpy array representing
+                     RBG intensities, 10 numbers for each color)
     '''
     
     color_dist_dict = {}
@@ -221,27 +217,31 @@ def vectorize_color_distribution(paths, category):
     return color_dist_dict
 
 
-
 # ----------------------------------------------------------------------------
-# For testing vectorizing results by clustering: 
+# For testing/visualizing vectorizing results by clustering: 
 # ----------------------------------------------------------------------------
 
 def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, domi_color=True):
     '''
-    Cluster by color & save files to different folders according to labels.
+    Cluster by colors & save files to different folders according to labels.
 
     INPUT: 
         color_dict: dictionary
-            * key: path
-            * value: dominant color (just one) or color distribution vector
+            key: path
+            value: dominant color or color distribution vector
+        category: string
+        n_clusters: integer
+        save_image: boolean
+        domi_color: boolean
       
     OUTPUT: 
         cluster_label_dict: dictionary
-            * key: path
-            * value: cluster label
+            key: path
+            value: cluster label
         color_centroids: list
-            * index: label 
-            * value: centroid
+            index: label 
+            value: centroid
+        km_color: trained KMeans model
     '''
 
     color_values = color_dict.values()
@@ -252,7 +252,6 @@ def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, 
         
     km_color = KMeans(n_clusters=n_clusters)
     colors_labels =km_color.fit_predict(color_values)
-    
     color_centroids = km_color.cluster_centers_
              
     cluster_label_dict = {}
@@ -272,23 +271,28 @@ def clustering_with_color(color_dict, category, n_clusters=10, save_image=True, 
     return cluster_label_dict, color_centroids, km_color
 
 
-
-def clustering_with_feature(feature_dict, category, n_clusters=10, pca=False, save_image=True, edge=False):
+def clustering_with_feature(feature_dict, category, n_clusters=10, save_image=True, pca=False, edge=False):
     '''
     Cluster by features & save files to different folders according to labels.
 
     INPUT: 
         feature_dict: dictionary
-            * key: path
-            * value: features
+            key: path
+            value: features
+        category: string
+        n_clusters: integer
+        save_image: boolean
+        pca: boolean
+        edge: boolean
 
     OUTPUT: 
         cluster_label_dict: dictionary
-            * key: path
-            * value: cluster label
+            key: path
+            value: cluster label
         feature_centroids: list
-            * index: label 
-            * value: centroid
+            index: label 
+            value: centroid
+        km_feature: trained KMeans model
     '''
 
     feature_values = feature_dict.values()

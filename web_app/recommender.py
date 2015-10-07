@@ -10,6 +10,24 @@ from scipy.spatial.distance import cosine, euclidean
 
 def recommender(image, text, category, pca_scaler_dict, pca_model_dict, tfidf_dict, 
     all_info_df_dict, n_recomm_items=8, color=False, price_limit=None):
+    '''
+    Vectorize the image and/or text input, find the most similar items in the database,
+    and return the information of those items in a dataframe.
+
+    INPUT:
+        image: numpy array
+        text: string
+        category: string
+        pca_scaler_dict: dictionary
+        pca_model_dict: dictionary
+        tfidf_dict: dictionary
+        all_info_df_dict: dictionary
+        n_recomm_items: integer
+        color: boolean
+        price_limit: integer
+    OUTPUT:
+        final_df: pandas dataframe
+    '''
 
     pca_scaler = pca_scaler_dict[category]
     pca_model = pca_model_dict[category]
@@ -17,15 +35,15 @@ def recommender(image, text, category, pca_scaler_dict, pca_model_dict, tfidf_di
     all_info_df = all_info_df_dict[category]
 
     if image is not None:
-        # Dominant color
+        # Get dominant color:
         domi_color = get_domi_color_new_image(image)
-        # PCA
+        # Do PCA:
         image = skimage.color.rgb2gray(image)
         image = transform.resize(image, (150,150))
         features = np.array([image[irow][icol] for irow in range(150) for icol in range(150)])
         features_scaled = pca_scaler.transform(features)
         pca_feature = pca_model.transform(features_scaled)
-        # Calculating image distances
+        # Calculate image distances:
         all_info_df['domi_distance'] = all_info_df['domi'].apply(lambda x:euclidean(domi_color, x))
         all_info_df['pca_distance'] = all_info_df['pca'].apply(lambda x:euclidean(pca_feature, x))
     else:
@@ -33,28 +51,25 @@ def recommender(image, text, category, pca_scaler_dict, pca_model_dict, tfidf_di
         all_info_df['pca_distance'] = 0
 
     if len(text) != 0:
-        # tfidf
+        # Tf-idf transform:
         tfidf_vec = tfidf.transform([text]).todense()
-        # Calculating text distance
+        # Calculate text distance:
         all_info_df['text_distance'] = all_info_df['tfidf_vec'].apply(lambda x:cosine(tfidf_vec, x))
     else:
         all_info_df['text_distance'] = 0
 
-
-    # Get recommended items in final_df:
     domi_weight = 2
     if color:
         domi_weight = 10
 
+    # Calculate total distance:
     all_info_df['total_distance'] = all_info_df['domi_distance'] * domi_weight + all_info_df['pca_distance']/500 + all_info_df['text_distance']
 
-    #display_df = all_info_df[['path', 'product_id', 'title', 'price', 'url', 'rating_avg', 'rating_count', 'total_distance']]
     display_df = all_info_df[['path', 'product_id', 'title', 'price', 'url', 'total_distance']]
-
     display_df.sort(columns='total_distance', axis=0, ascending=True, inplace=True)
 
+    # Get recommended items in final_df:
     index = display_df.index
-
     flag = True
     final_df = pd.DataFrame({'product_id': {0: 0}})
     for i in index:

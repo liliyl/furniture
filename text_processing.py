@@ -7,27 +7,34 @@ from sklearn.cluster import KMeans
 from nltk.corpus import stopwords 
 from nltk import word_tokenize
 from nltk.stem.snowball import SnowballStemmer
-from image_processing import get_paths
+from helper import get_paths
 
 
-def clean_text_data(df, sofa=False):
+def clean_text_data(df):
+    '''
+    INPUT: 
+        df: pandas dataframe
+    OUTPUT: 
+        df: pandas dataframe
+    ''' 
+
     df['product_id'] = df['product_id'].apply(lambda x: x.strip())
     df['price'] = df['price'].apply(lambda x:float(x.strip('$').replace(',','').split()[0]))
     df['features'] = df['features'].apply(lambda x: '\n'.join(x) if type(x)==list else x)
     df['description'] = df['description'].apply(lambda x: '\n'.join(x) if type(x)==list else x)
     df['description'][df['description'].isnull()] = ''
     df['description_all'] = df['description'] + '\n' + df['features']
-    if sofa:
-        df = df.set_index('product_id')
     return df 
 
 
 def my_tokenizer(doc):
     '''
-    INPUT: string
-    OUTPUT: list of strings
-
     Tokenize and stem/lemmatize the document.
+
+    INPUT: 
+        doc: string
+    OUTPUT: 
+        word_list: list of strings
     '''   
     
     token = re.findall(r'\w+', doc.lower())
@@ -36,11 +43,19 @@ def my_tokenizer(doc):
     token_stop = [word for word in token if word not in sw]
     
     snowball = SnowballStemmer('english')
-    sbs_ar = [snowball.stem(word) for word in token_stop]
-    return sbs_ar 
+    word_list = [snowball.stem(word) for word in token_stop]
+    return word_list 
 
 
 def get_top_words_for_each_cluster(km_model, tfidf):
+    '''
+    INPUT: 
+        km_model: trained KMeans model
+        tfidf: trained TfidfVectorizer
+    OUTPUT: 
+        cluster_top_words: list of lists
+    ''' 
+
 	cluster_top_words = []
     centroids = km_model.cluster_centers_
     centroid_top_10_index = [np.argsort(centroids, axis=1)[i][::-1][0:10] for i in xrange(centroids.shape[0])]
@@ -51,6 +66,15 @@ def get_top_words_for_each_cluster(km_model, tfidf):
 
 
 def visualize_text_clustering_result(km_model):
+    '''
+    Save images to different folders accoring to the kmeans clustering labels.
+
+    INPUT: 
+        km_model: trained KMeans model
+    OUTPUT: 
+        None
+    ''' 
+
 	text_clustering_result = collections.defaultdict(list)
     for i, label in enumerate(km_model.labels_):
         text_clustering_result[label].append(int(X.index[i]))

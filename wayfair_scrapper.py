@@ -8,19 +8,19 @@ from time import sleep
 
 
 def get_wayfair_product_links(base_link, num_pages=1):
-
     '''
     INPUT: 
-    * product index page URL link 
-    * number of pages that product links will be scrapped from 
-      (each page have 48 products)
-    
+        base_link: string
+            product index page URL link 
+        num_pages: integer
+            number of pages that product links will be scrapped from 
+            (each page have 48 products)
     OUTPUT:
-    * URL links to product pages with product details
+        product_links: list of strings
+            URL links to product pages with product details
     '''
 
     product_links = []
-
 
     for num in range(1,num_pages+1):
         html  = urlopen(base_link+str(num))
@@ -32,34 +32,30 @@ def get_wayfair_product_links(base_link, num_pages=1):
     return product_links
 
 
-
 def wayfair_product_info_scrapper(link, category):
     '''
     INPUT: 
-    * one product URL link 
-    * category
-    
+        link: string
+            one product URL link 
+        category: string
     OUTPUT:
-    A product info dictionary with the following keys:
-	    * product_id
-	    * website
-	    * category
-	    * url
-	    * title
-	    * price
-	    * colors
-
-	    * description
-	    * features
-	    * specs
-	    
-	    * manufacturer
-	    * rating_avg
-	    * rating_count
-
-	    * image_links_all
-	    * image_links_by_color
-    
+        product_info_dict: dictionary
+            A product info dictionary with the following keys:
+                * product_id
+                * website
+                * category
+                * url
+                * title
+                * price
+                * colors
+                * description
+                * features
+                * specs         
+                * manufacturer
+                * rating_avg
+                * rating_count
+                * image_links_all
+                * image_links_by_color
     '''
 
     html  = urlopen(link, timeout=100)
@@ -77,8 +73,6 @@ def wayfair_product_info_scrapper(link, category):
     features = [x.text for x in features_info]
        
     manufacturer = soup.find('span', {'class':'manu_name'}).text.strip().lstrip('by').strip() 
-    
-
         
     if soup.find('span', {'class': 'rating_value'}) != None:
         rating_avg = soup.find('span', {'class': 'rating_value'}).text
@@ -122,7 +116,7 @@ def wayfair_product_info_scrapper(link, category):
     else:
         description = None
 
-    # Add code to fix missing features data (when the webpage has a different structure):
+    # Add code to scrape missing features data (when the webpage has a different structure):
     if len(features) == 0:
         description_info = soup.find('div', {'class':'no_json_description'})
         if description_info.text != None:
@@ -143,15 +137,12 @@ def wayfair_product_info_scrapper(link, category):
     product_info_dict['title'] = title
     product_info_dict['price'] = price
     product_info_dict['colors'] = colors
-    
     product_info_dict['description'] = description
     product_info_dict['features'] = features
     product_info_dict['specs'] = specs
     product_info_dict['manufacturer'] = manufacturer
     product_info_dict['rating_avg'] = rating_avg
     product_info_dict['rating_count'] = rating_count
-    
-
     product_info_dict['image_links_all'] = image_links_all
     product_info_dict['image_links_by_color'] = image_links_by_color
     
@@ -160,6 +151,16 @@ def wayfair_product_info_scrapper(link, category):
 
 
 def wayfair_image_scrapper(indices, category):
+    '''
+    Save images from the image URLs.
+
+    INPUT: 
+        indices: list of integers
+        category: string
+    OUTPUT:
+        None
+    '''
+
     image = urllib.URLopener()
     for i in indices:
         i = int(i)
@@ -171,6 +172,14 @@ def wayfair_image_scrapper(indices, category):
 
 
 def multithreading_image_scrapper(df, category):
+    '''
+    INPUT: 
+        df: pandas dataframe 
+        category: string
+    OUTPUT:
+        None
+    '''
+
     index = df.index.values
     threads = []
     for i in xrange(0, 11):
@@ -221,7 +230,6 @@ if __name__ == '__main__':
             df = pd.concat([df, df_product], axis=0)
             i += 1
         df.to_json('wayfair/%s.json' % category)
-
 
     # Image scrapping: 
     for category in categories:

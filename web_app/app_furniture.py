@@ -6,6 +6,7 @@ from recommender import recommender
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
+# Global variables (dictionaries for unpickled models and dataframes:
 pca_scaler_dict = {}
 pca_model_dict = {}
 tfidf_dict = {}
@@ -376,8 +377,6 @@ def init_server():
 
         path = 'data/' + category + '_vec_info.json'
         all_info_df_dict[category] = pd.read_json(path)
-
-    return
 
 
 if __name__ == '__main__':

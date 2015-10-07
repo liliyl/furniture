@@ -5,9 +5,21 @@ import time
 from collections import defaultdict
 from scipy.spatial.distance import cosine, euclidean
 from sklearn.feature_extraction.text import TfidfVectorizer
-from image_processing import get_paths, get_domi_color, image_featurizer
+from helper import get_paths
+from image_processing import get_domi_color, image_featurizer
 
 def build_all_vec_info_json(category):
+    '''
+    For each image within the category, calculate the dominant color and the PCAed vector.
+    For each item within the category, use tfidf to vectorize the description.
+    Merge the info above, together with product info (title, price, URL etc.) to one dataframe,
+        then save it to a json file.
+
+    INPUT:
+        category: string
+    OUTPUT:
+        None
+    '''
 
     paths = get_paths(category)
     print len(paths)
@@ -63,7 +75,7 @@ def build_all_vec_info_json(category):
         pickle.dump(tfidf, f)
 
 
-    # Add tfide vectors to the dataframe:
+    # Add tfidf vectors to the dataframe:
     tfidf_matrix = np.array(tfidf_matrix)
 
     tfidf_dict = defaultdict(dict)
@@ -87,7 +99,6 @@ def build_all_vec_info_json(category):
     path = 'wayfair/' + category + '_vec_info.json'
     all_info_df.to_json(path)
 
-    return
 
 if __name__ == '__main__':
     categories = ['sofa', 'coffee_table', 'office', 'dining', 'bookcase', 'nightstand', 'bed', 'dresser']
