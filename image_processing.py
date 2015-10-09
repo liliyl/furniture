@@ -160,10 +160,8 @@ def get_domi_color_new_image(image, n_clusters=2):
     kmean.fit_transform(lst_of_pixels)
     domi_colors = kmean.cluster_centers_
 
-    # Get the non-white dominant color:
-    white_color_arr = np.array([0.90, 0.90, 0.90])
-    domi_color = None
-    if np.mean(domi_colors[0] > white_color_arr) != 1:
+    # Get the dominant color of the furniture (darker than the background):
+    if np.mean(domi_colors[0]) < np.mean(domi_colors[1]):
         domi_color = domi_colors[0]
     else:
         domi_color = domi_colors[1]
