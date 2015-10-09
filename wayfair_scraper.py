@@ -13,7 +13,7 @@ def get_wayfair_product_links(base_link, num_pages=1):
         base_link: string
             product index page URL link 
         num_pages: integer
-            number of pages that product links will be scrapped from 
+            number of pages that product links will be scraped from 
             (each page have 48 products)
     OUTPUT:
         product_links: list of strings
@@ -32,7 +32,7 @@ def get_wayfair_product_links(base_link, num_pages=1):
     return product_links
 
 
-def wayfair_product_info_scrapper(link, category):
+def wayfair_product_info_scraper(link, category):
     '''
     INPUT: 
         link: string
@@ -150,7 +150,7 @@ def wayfair_product_info_scrapper(link, category):
     return product_info_dict
 
 
-def wayfair_image_scrapper(indices, category):
+def wayfair_image_scraper(indices, category):
     '''
     Save images from the image URLs.
 
@@ -171,7 +171,7 @@ def wayfair_image_scrapper(indices, category):
             image.retrieve(link, 'wayfair/images/%s/%s_%s_%s.jpg' % (category, category, product_id, str(j)))
 
 
-def multithreading_image_scrapper(df, category):
+def multithreading_image_scraper(df, category):
     '''
     INPUT: 
         df: pandas dataframe 
@@ -189,7 +189,7 @@ def multithreading_image_scrapper(df, category):
         else:
             end = (i+1)*100
         indices = tuple(index[start:end])
-        t = threading.Thread(target=wayfair_image_scrapper, args=(indices, category))
+        t = threading.Thread(target=wayfair_image_scraper, args=(indices, category))
         threads.append(t)
 
     for thread in threads: thread.start()
@@ -217,22 +217,22 @@ if __name__ == '__main__':
     categories = ['sofa', 'sofa_bed', 'futon', 'loveseat', 'coffee_table', 'desk', 'office_chair', 
                     'dining_table', 'dining_chair', 'bookcase', 'nightstand', 'bed', 'dresser']
 
-    # Product info scrapping:
+    # Product info scraping:
     for category in categories:
         product_links = get_wayfair_product_links(base_link_dict[category], num_pages=20)
         link_0 = product_links[0]
-        dict_0 = wayfair_product_info_scrapper(link_0, category_input= category)
+        dict_0 = wayfair_product_info_scraper(link_0, category_input= category)
         df = pd.DataFrame([dict_0], index=[0])
         i = 1
         for link in sofa_bed_links[1:]:
-            product_dict = wayfair_product_info_scrapper(link, category_input=category)
+            product_dict = wayfair_product_info_scraper(link, category_input=category)
             df_product = pd.DataFrame([product_dict], index=[i])
             df = pd.concat([df, df_product], axis=0)
             i += 1
         df.to_json('wayfair/%s.json' % category)
 
-    # Image scrapping: 
+    # Image scraping: 
     for category in categories:
         df = pd.read_json('wayfair/%s.json' % category)
-        multithreading_image_scrapper(df, category)
+        multithreading_image_scraper(df, category)
    
