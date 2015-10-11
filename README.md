@@ -17,7 +17,7 @@ All furniture data are scraped from Wayfair.com. Wayfair is an e-commerce websit
 ## Data pipeline
 ![Data pipeline](readme_img/data_pipeline.png)
 
-### Image processing:
+#### Image processing:
 Firstly, images with white background are selected. For all those images, I did the following vectorization:
 
 * K-means:
@@ -32,13 +32,13 @@ Firstly, images with white background are selected. For all those images, I did 
     I resized and gray-scaled the images and did PCA on the image vectors. Before PCA, each 150px * 150px image vector has 22,500 dimensions. With PCA I reduce the image vectors to 100 dimensions but still captured more than 90% of the variance. I found out that PCAed image vectors could capture the general shape info of the furniture. Here are the example results of k-means clustering on image vectors after PCA:
 ![Shape](readme_img/shape.png)
 
-### Text processing:
+#### Text processing:
 * TF-IDF:
 
 	For all product descriptions, I did TF-IDF to vectorize the text. The TF-IDF vectors are found to capture some style/material info of the furniture. Here are the example results of k-means clustering on TF-IDF vectors:
 ![Style](readme_img/style.png)
 
-### User input processing:
+#### User input processing:
 User can input an image URL and/or the description of the target furniture. The web app will perform the same vectorizations to images and text as described above. Then similarity scores will be calculated for each type of vectorization. And total similarity scores will be calculated as a weighed sum of dominant color, shape and style similarities. The eight most similar items in the database will be presented in the web app, sorted by prices.
 ![Recommendation example](readme_img/recommendation.png)
 
