@@ -64,6 +64,11 @@ User can input an image URL and/or the description of the target furniture. The 
 
 ```
 
+## Future Work
+* Use more advanced featurization techniques on images (e.g. scale-invariant feature transform) and text (e.g. Doc2Vec) to optimize information extraction from the data.
+* Create a better user interface
+* Expand furniture database
+
 
 ## Package used
 * NumPy
