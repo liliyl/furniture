@@ -1,5 +1,5 @@
 # Furniture seeker
-Galvanize capstone project - Lili Yao
+Galvanize Data Science Program - Capstone Project - Lili Yao
 
 
 ## TL; DR
