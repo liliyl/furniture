@@ -29,7 +29,7 @@ Firstly, images with white background are selected. For all those images, I did 
 
 * PCA:
 
-    I resized and gray-scaled all images and did PCA on the image vectors. Before PCA the 150px * 150px image vector has 22,500 dimensions. With PCA I reduce the image vectors to 100 dimensions but still captured more than 90% of the variance. I found out that PCAed image vectors could capture the general shape info of the furniture. Here are the example results of k-means clustering on image vectors after PCA:
+    I resized and gray-scaled the images and did PCA on the image vectors. Before PCA, each 150px * 150px image vector has 22,500 dimensions. With PCA I reduce the image vectors to 100 dimensions but still captured more than 90% of the variance. I found out that PCAed image vectors could capture the general shape info of the furniture. Here are the example results of k-means clustering on image vectors after PCA:
 ![Shape](readme_img/shape.png)
 
 ### Text processing:
@@ -54,6 +54,7 @@ User can input an image URL and/or the description of the target furniture. The 
 |                                    and pulling all info together)
 ├── scraper
 |   └── wayfair_scraper.py (Wayfair.com text and image scraping functions)
+|
 ├── web_app
 |   ├── data (all scraped and vectorized data used in the app)
 |   ├── models (all pickled models used in the app)
