@@ -2,7 +2,7 @@
 Galvanize Data Science Program - Capstone Project - Lili Yao
 
 
-## TL; DR
+## Overview
 It often happens that people find a piece of furniture online which they really like, but unfortunately out of their budget. At these times, Furniture Seeker will come in handy and present similar but more budget-friendly ones. The Furniture Seeker takes input of images URL and/or description of the target furniture, then vectorizes the information (with k-means clustering, PCA and TF-IDF) and recommends the most similar items from the furniture database.
 
 Check out my web app here: [FurnitureSeeker.info](http://www.furnitureseeker.info/)
@@ -11,7 +11,7 @@ Check out my web app here: [FurnitureSeeker.info](http://www.furnitureseeker.inf
 
 
 ## Data source
-All furniture data are scraped from Wayfair.com. Wayfair is an e-commerce website with a great variety of furniture styles and prices. In total, I scraped more than 10,000 pieces of furniture and 50,000 images. The following information are scraped for each item: product title, price, URL, category, description, ratings, images etc. All info except for images are saved in MongoDB.
+All furniture data are scraped from Wayfair.com. Wayfair is an e-commerce website with a great variety of furniture styles and prices. In total, I scraped more than 10,000 pieces of furniture and 50,000 images. The following information are scraped for each item: product title, price, URL, category, description, ratings, images etc. All information except for images are saved in MongoDB.
 
 
 ## Data pipeline
@@ -80,7 +80,7 @@ User can input an image URL and/or the description of the target furniture. The 
 * matplotlib
 * NLTK
 * urllib
-* Beautiful Soup
+* BeautifulSoup
 * PyMongo
 * threading
 * Flask
