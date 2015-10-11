@@ -2,6 +2,7 @@ import pandas as pd
 import random
 import urllib
 import threading
+from pymongo import MongoClient
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 from time import sleep
@@ -217,22 +218,22 @@ if __name__ == '__main__':
     categories = ['sofa', 'sofa_bed', 'futon', 'loveseat', 'coffee_table', 'desk', 'office_chair', 
                     'dining_table', 'dining_chair', 'bookcase', 'nightstand', 'bed', 'dresser']
 
-    # Product info scraping:
+    # Product info scraping and saving into MongoDB:
     for category in categories:
+        client = MongoClient()
+        db = client['furniture']
+        collection = db[category]
+
         product_links = get_wayfair_product_links(base_link_dict[category], num_pages=20)
-        link_0 = product_links[0]
-        dict_0 = wayfair_product_info_scraper(link_0, category_input= category)
-        df = pd.DataFrame([dict_0], index=[0])
-        i = 1
-        for link in sofa_bed_links[1:]:
+        for link in product_links[]:
             product_dict = wayfair_product_info_scraper(link, category_input=category)
-            df_product = pd.DataFrame([product_dict], index=[i])
-            df = pd.concat([df, df_product], axis=0)
-            i += 1
-        df.to_json('wayfair/%s.json' % category)
+            collection.insert_one(product_dict)
 
     # Image scraping: 
     for category in categories:
-        df = pd.read_json('wayfair/%s.json' % category)
+        client = MongoClient()
+        db = client['furniture']
+        collection = db[category]
+        df = pd.DataFrame(list(collection.find()))
         multithreading_image_scraper(df, category)
    

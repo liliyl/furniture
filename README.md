@@ -11,7 +11,7 @@ Check out my web app here: [FurnitureSeeker.info](http://www.furnitureseeker.inf
 
 
 ## Data source
-All furniture data are scraped from Wayfair.com. Wayfair is an e-commerce website with a great variety of furniture styles and prices. In total, I scraped more than 10,000 pieces of furniture and 50,000 images. The following information are scraped for each item: product title, price, URL, category, description, ratings, images etc.
+All furniture data are scraped from Wayfair.com. Wayfair is an e-commerce website with a great variety of furniture styles and prices. In total, I scraped more than 10,000 pieces of furniture and 50,000 images. The following information are scraped for each item: product title, price, URL, category, description, ratings, images etc. All info except for images are saved in MongoDB.
 
 
 ## Data pipeline
@@ -81,6 +81,7 @@ User can input an image URL and/or the description of the target furniture. The 
 * NLTK
 * urllib
 * Beautiful Soup
+* PyMongo
 * threading
 * Flask
 

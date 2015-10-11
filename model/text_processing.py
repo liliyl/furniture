@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import re
 import collections
+from pymongo import MongoClient
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from nltk.corpus import stopwords 
@@ -93,9 +94,12 @@ def visualize_text_clustering_result(km_model):
 if __name__ == '__main__':
     categories = ['sofa', 'coffee_table', 'office', 'dining', 'bookcase', 'nightstand', 'bed', 'dresser']
     for category in categories:
+        client = MongoClient()
+        db = client['furniture']
+        collection = db[category]
+        df = pd.DataFrame(list(collection.find()))
+
         path = 'wayfair/' + category + '.json'
-        df = pd.read_json(path)
-        df = clean_text_data(df)
         df.to_json(path)
 
         X = df['description_all'][df['description_all'].notnull()]

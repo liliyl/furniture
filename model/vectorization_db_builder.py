@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import cPickle as pickle
 import time
+from pymongo import MongoClient
 from collections import defaultdict
 from scipy.spatial.distance import cosine, euclidean
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -55,8 +56,10 @@ def build_all_vec_info_json(category):
     domi_pca_df.rename(columns={'index': 'path'}, inplace=True)
     domi_pca_df['product_id'] = domi_pca_df['path'].apply(lambda x:x.split('.')[0].split('_')[-2])
 
-    path = 'wayfair/' + category +'.json'
-    products_df = pd.read_json(path)
+    client = MongoClient()
+    db = client['furniture']
+    collection = db[category]
+    products_df = pd.DataFrame(list(collection.find()))
 
     products_df_small = products_df[['product_id', 'title', 'price', 'url', 'description_all', 'rating_avg', 'rating_count']]
 
