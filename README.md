@@ -71,7 +71,7 @@ User can input an image URL and/or the description of the target furniture. The 
 * Expand furniture database
 
 
-## Package used
+## Packages used
 * NumPy
 * pandas
 * SciPy
@@ -87,3 +87,11 @@ User can input an image URL and/or the description of the target furniture. The 
 
 ## Web app: [FurnitureSeeker.info](http://www.furnitureseeker.info/)
 ![Web app intro](readme_img/web_app_intro.png)
+
+### In the web app, you can:
+
+* Search within the category for similar but more budget friendly items.
+* Search across categories for matching items.
+* Be creative! :)
+
+
