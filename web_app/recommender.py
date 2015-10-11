@@ -4,8 +4,40 @@ import pandas as pd
 import cPickle as pickle
 import skimage
 from skimage import transform
-from image_processing_app import get_domi_color_new_image
 from scipy.spatial.distance import cosine, euclidean
+from sklearn.cluster import KMeans
+
+
+def get_domi_color_new_image(image, n_clusters=2):
+    '''
+    INPUT:
+        image: numpy array
+        n_clusters: integer
+    OUTPUT:
+        domi_color: numpy array
+    '''
+    
+    if len(image.shape) == 3:
+        image = transform.resize(image, (300,300,3))
+    else:
+        return -1
+
+    # Flatten the image matrix:
+    nrow, ncol, depth = image.shape 
+    lst_of_pixels = [image[irow][icol] for irow in range(nrow) for icol in range(ncol)]
+
+    # Clustering the colors of each pixel:
+    kmean = KMeans(n_clusters=n_clusters)
+    kmean.fit_transform(lst_of_pixels)
+    domi_colors = kmean.cluster_centers_ 
+
+    # Get the dominant color of the furniture (darker than the background):
+    if np.mean(domi_colors[0]) < np.mean(domi_colors[1]):
+        domi_color = domi_colors[0]
+    else:
+        domi_color = domi_colors[1]
+        
+    return domi_color
 
 
 def recommender(image, text, category, pca_scaler_dict, pca_model_dict, tfidf_dict, 

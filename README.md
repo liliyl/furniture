@@ -44,7 +44,6 @@ User can input an image URL and/or the description of the target furniture. The 
 
 ## Repo Structure
 ```
-.
 ├── model
 |   ├── pyimage (module implemented by Jeffrey Tang for basic image processing)
 |   ├── helper.py
@@ -59,7 +58,6 @@ User can input an image URL and/or the description of the target furniture. The 
 |   ├── static
 |   ├── templates
 |   ├── app.py
-|   ├── image_processing_app.py
 |   └── recommender.py
 
 ```
@@ -82,5 +80,3 @@ User can input an image URL and/or the description of the target furniture. The 
 
 ## Web app
 
-
-## Code walk-through
