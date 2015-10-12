@@ -39,7 +39,7 @@ Firstly, images with white background are selected. For all those images, I did 
 ![Style](readme_img/style.png)
 
 #### User input processing:
-User can input an image URL and/or the description of the target furniture. The web app will perform the same vectorizations to images and text as described above. Then similarity scores will be calculated for each type of vectorization. And total similarity scores will be calculated as a weighed sum of dominant color, shape and style similarities. The eight most similar items in the database will be presented in the web app, sorted by prices.
+User can input an image URL and/or the description of the target furniture. The web app will perform the same vectorizations to images and text as described above. Then similarity scores will be calculated for each type of vectorization. And total similarity scores will be calculated as a weighted sum of dominant color, shape and style similarities. The eight most similar items in the database will be presented in the web app, sorted by prices.
 ![Recommendation example](readme_img/recommendation.png)
 
 
